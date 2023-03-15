@@ -2,7 +2,7 @@
 
 Menedżer haseł
 
-Funkcjonalności: 
+Zaimplementowane funkcjonalności dotyczące hasła: 
 sortowanie, 
 grupowanie, 
 generowanie, 
@@ -12,5 +12,6 @@ dodawanie,
 usuwanie; 
 
 Kod działa z poziomu terminalu, bez interfejsu graficznego.
-Zdecydowanie do zmiany jest podział kodu na wiele plików, aktualnie znajduje się w wersji roboczej.
-Należy również dodać hasło globalne oraz ulepszenie funkcji tworzącej szum danych.
+
+Dla lepszej czytelności kodu należy podzielić go na wiele plików.
+Kolejne zmiany będą dotyczyły założenia globalnego hasła oraz uduskonalenie metody tworzącej szum danych. 
