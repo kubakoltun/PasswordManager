@@ -83,6 +83,7 @@ std::string rozszyfrujFraze(std::string rozFraza) {
         otrzym -= 1;
         rozszyfrowane += otrzym;
     }
+    
     return rozszyfrowane;
 }
 
