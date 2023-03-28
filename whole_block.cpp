@@ -62,6 +62,7 @@ std::string szyfrujWejscie(std::string fraza) {
         trzym += 1;
         szyfr += trzym;
     }
+    
     return szyfr;
 }
 
