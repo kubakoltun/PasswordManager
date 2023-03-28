@@ -42,6 +42,7 @@ std::string sprawdzCzas(const std::string& przelacznik) {
         return s;
     }
     else {
+        
         return "blednie wczytano parametry";
     }
 }
