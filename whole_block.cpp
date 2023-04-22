@@ -6,6 +6,7 @@
 #include <chrono>
 
 #include "time_stamp.h"
+#include "cypher.h"
 
 /**
  * Impementacja metody szyfrowania
