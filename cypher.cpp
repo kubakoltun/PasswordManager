@@ -20,3 +20,24 @@ std::string szyfrujWejscie(std::string fraza) {
 
     return szyfr;
 }
+
+/**
+ * Przekazywana jest zaszyfrowana tresc
+ * String zostaje odszyfrowany
+ * Petla przesuwa znaki ASCII stringa do przed szyfrowaniem
+ *
+ * @param rozFraza string ktory ma zostac rozszyfrowany
+ * @return zwracany jest rozszyfrowany coag znakow
+ */
+std::string rozszyfrujFraze(std::string rozFraza) {
+    size_t rozmiar_hasla = rozFraza.length();
+    std::string rozszyfrowane;
+    char otrzym = ' ';
+    for (size_t i = 0; i < rozmiar_hasla; i++) {
+        otrzym = rozFraza[i];
+        otrzym -= 1;
+        rozszyfrowane += otrzym;
+    }
+
+    return rozszyfrowane;
+}
