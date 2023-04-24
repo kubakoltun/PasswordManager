@@ -1,5 +1,4 @@
 #include "files.h"
-#include "cypher.h"
 #include "time_stamp.h"
 
 /**
@@ -11,10 +10,9 @@
  */
 bool czyPlikIstnieje(const std::string& podanyPlik) {
     struct stat buf {};
-    //somehow i managed to replaced it with a stream
-//    if (stat(podanyPlik.c_str(), &buf) != -1) {
-//        return true;
-//    }
+    if (stat(podanyPlik.c_str(), &buf) != -1) {
+        return true;
+    }
     return false;
 }
 

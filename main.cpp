@@ -1,13 +1,9 @@
 #include <iostream>
 #include <string>
 
-#include "time_stamp.h"
-#include "cypher.h"
-#include "files.h"
 #include "password.h"
 
-int main()
-{
+int main() {
     bool powtorz = false;
     std::string glownyPlik;
 

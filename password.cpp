@@ -1,7 +1,8 @@
-#include "password.h"
-#include "cypher.h"
+#include "cypher.cpp"
 #include "files.h"
+#include "files.cpp"
 #include "time_stamp.h"
+#include "time_stamp.cpp"
 
 /**
  * Metoda pobiera jako parametry wprowadzone przez uzytkownika zmienne informujace o wymiarach hasla
@@ -14,7 +15,6 @@
  * @param nazwa parametr decyzyjny, dlugosc podanej nazwy dla hasla jest jedna z podstaw do warunkow
  * @return zwracane jest haslo utworzone w oparciu o podane kryteria
  */
-
 std::string imitowanieLosowosci_generowanie_hasla(const int ilosc_znakow, const bool wielkie, const bool specjalne, const std::string& nazwa) {
     size_t nazwa_dlugosc = nazwa.size();
     std::string losowe_haslo;

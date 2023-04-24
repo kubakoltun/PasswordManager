@@ -1,10 +1,6 @@
-
-#ifndef TIME_STAMP_H
-#define TIME_STAMP_H
-
 #pragma once
+#include "time_stamp.h"
 #include <string>
 
 std::string sprawdzCzas(const std::string& przelacznik);
 
-#endif //TIME_STAMP
