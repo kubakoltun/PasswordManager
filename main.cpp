@@ -133,8 +133,7 @@ int main() {
                                 }
                                 else if (parametr_sorotwaniaDwa == "Login" || parametr_sorotwaniaDwa == "login") {
                                     parametr_sorotwaniaDwa = "Login: ";
-                                }
-                                else {
+                                } else {
                                     std::cout << "Wprowadzono bledny parametr, zwroc uwage na wypisane w nawiasie dostepne parametry." << std::endl;
                                     powtorz = true;
                                 }
@@ -219,8 +218,7 @@ int main() {
                                 }
                                 else if (parametr_sorotwaniaDwa == "Login" || parametr_sorotwaniaDwa == "login") {
                                     parametr_sorotwaniaDwa = "Login: ";
-                                }
-                                else {
+                                } else {
                                     std::cout << "Wprowadzono bledny parametr, zwroc uwage na wypisane w nawiasie dostepne parametry." << std::endl;
                                     powtorz = true;
                                 }
