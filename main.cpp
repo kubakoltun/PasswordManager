@@ -82,8 +82,7 @@ int main() {
                     std::cout << "Wyniki wyszukiwania:" << std::endl;
                     wyszukajHaslo(glownyPlik, wh_login, "Login: ");
 
-                }
-                else {
+                } else {
                     std::cout << "Nie znaleziono Twojej komendy: \"" << wyszukaj_hasla << "\". \nSprobuj ponownie wprowadzic cyfre reprezentujaca dana komende.\n" << std::endl;
                     powtorz = true;
                 }
