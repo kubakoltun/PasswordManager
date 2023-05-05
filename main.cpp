@@ -16,8 +16,7 @@ int main() {
         if (!czyPlikIstnieje(glownyPlik)) {
             std::cout << "Wprowadzona nazwa lub sciezka pliku nie istnieje: \"" << glownyPlik << "\" wprowadz poprawna nazwe lub sicezke pliku." << std::endl;
             powtorz = true;
-        }
-        else {
+        } else {
             powtorz = false;
         }
     } while (powtorz);
