@@ -7,7 +7,7 @@ sortowanie, \
 grupowanie, \
 generowanie, \
 sprawdzanie siły, \
-autorskie szyfrowanie oraz odszyfrowywanie danych, \ 
+autorskie szyfrowanie oraz odszyfrowywanie danych, \
 dodawanie, \
 usuwanie; \
 
