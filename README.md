@@ -9,7 +9,7 @@ generowanie, \
 sprawdzanie siły, \
 autorskie szyfrowanie oraz odszyfrowywanie danych, \
 dodawanie, \
-usuwanie; \
+usuwanie;
 
 Kod działa z poziomu terminala, bez interfejsu graficznego.
 
