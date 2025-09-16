@@ -348,17 +348,15 @@ int main() {
                         }
                     } while (powtorz);
 
-                    haslo = imitowanieLosowosci_generowanie_hasla(ilosc_znakow_generowanego_hasla, czy_wielkie_znaki, czy_specjalne_znaki, nazwa);
+                    haslo = generate_password(ilosc_znakow_generowanego_hasla, czy_wielkie_znaki, czy_specjalne_znaki, nazwa);
                     std::cout << "Wygenerowane haslo: " << haslo << std::endl;
-                    std::cout << "Haslo jest " << sprawdzanieSilyHasla(haslo) << "!" << std::endl;
-
-
+                    std::cout << "Haslo jest " << password_strength_verifier(haslo) << "!" << std::endl;
                 }
                 else if (czy_wygenerowac_haslo == "-") {
                     std::cout << "Podaj Swoje haslo:" << std::endl;
                     std::cout << ">";
                     std::cin >> haslo;
-                    std::cout << "Haslo jest " << sprawdzanieSilyHasla(haslo) << "!" << std::endl;
+                    std::cout << "Haslo jest " << password_strength_verifier(haslo) << "!" << std::endl;
                     std::cout << wyszukajWszystkieHasla(glownyPlik, haslo) << std::endl;
                 }
                 else {

@@ -3,230 +3,104 @@
 #include "files.cpp"
 #include "time_stamp.h"
 #include "time_stamp.cpp"
+#include <string>
+#include <vector>
+#include <random>
+#include <algorithm>
+#include <cctype>
 
 /**
- * Metoda pobiera jako parametry wprowadzone przez uzytkownika zmienne informujace o wymiarach hasla
- * W zaleznosci od zmiennych uzytkownika haslo bedzie wzbogacane o dany znak ujety w przedziale petli jako znak ASCII
- * Seria warunkow ma za zadanie imitowac losowosc w efekcie czego zwrocic uzytkownikowi niepowtarzalne haslo
+ * Generates a random password according to user defined rules (arguments).
  *
- * @param ilosc_znakow dlugosc hasla jaka zadeklarowal uzytkownik
- * @param wielkie informacja czy haslo bedzie zawierac wielkie znaki
- * @param specjalne informacja czy haslo bedzie znaki specjalne
- * @param nazwa parametr decyzyjny, dlugosc podanej nazwy dla hasla jest jedna z podstaw do warunkow
- * @return zwracane jest haslo utworzone w oparciu o podane kryteria
+ * @param length - lenght of the password decaler by the user
+ * @param use_uppercase - tells whether the password should contain capital letters
+ * @param use_special - tells whether  the password should contain special characters
+ * @param name - name of the password
+ * @return a generated password is returned
  */
-std::string imitowanieLosowosci_generowanie_hasla(const int ilosc_znakow, const bool wielkie, const bool specjalne, const std::string& nazwa) {
-    size_t nazwa_dlugosc = nazwa.size();
-    std::string losowe_haslo;
-    int wprowadzone_znaki = 0;
+std::string generate_password(int length, bool use_uppercase, bool use_special, const std::string& name) {
+    if (length <= 0) return "";
 
-    if (wielkie) {
-        int wstrzymanie_wielkie = 0;
-        for (int i = 65; i <= 90; i++) {
-            if (wstrzymanie_wielkie == 3) {
-                break;
-            }
-            if (ilosc_znakow % 2 == 0 && nazwa_dlugosc % 2 != 0 && i > 73 && ilosc_znakow > 0 && wstrzymanie_wielkie <= 3) {
-                losowe_haslo += i + 2;
-                wstrzymanie_wielkie++;
-                wprowadzone_znaki++;
-                i++;
-            }
-            if (ilosc_znakow % 2 == 0 && nazwa_dlugosc % 2 == 0 && i > 70 && ilosc_znakow > 1 && wstrzymanie_wielkie <= 3) {
-                losowe_haslo += i + 3;
-                wstrzymanie_wielkie++;
-                wprowadzone_znaki++;
-                i++;
-            }
-            if (ilosc_znakow % 2 != 0 && nazwa_dlugosc % 2 == 0 && i > 67 && ilosc_znakow > 2 && wstrzymanie_wielkie <= 3) {
-                losowe_haslo += i + 4;
-                wstrzymanie_wielkie++;
-                wprowadzone_znaki++;
-                i++;
-            }
-            if (ilosc_znakow % 2 != 0 && nazwa_dlugosc % 2 != 0 && i >= 65 && ilosc_znakow > 3 && wstrzymanie_wielkie <= 3) {
-                losowe_haslo += i + 3;
-                wstrzymanie_wielkie++;
-                wprowadzone_znaki++;
-                i++;
-            }
-        }
+    // Base character sets
+    const std::string lowercase = "abcdefghijklmnopqrstuvwxyz";
+    const std::string uppercase = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    const std::string digits    = "0123456789";
+    const std::string special   = "!@#$%^&*()_+-=`~{}[]:;'\".,/<>?|\\";
+    
+    std::string pool = lowercase + digits;
+
+    if (use_uppercase) pool += uppercase;
+    if (use_special) pool += special;
+
+    // RNG setup
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_int_distribution<> dist(0, pool.size() - 1);
+
+    std::string password;
+    password.reserve(length);
+
+    // Ensure at least one of each required category
+    if (use_uppercase) password += uppercase[dist(gen) % uppercase.size()];
+    if (use_special)   password += special[dist(gen) % special.size()];
+    password += digits[dist(gen) % digits.size()];
+    password += lowercase[dist(gen) % lowercase.size()];
+
+    // Fill remaining characters
+    while ((int)password.size() < length) {
+        password += pool[dist(gen)];
     }
 
-    if (specjalne) {
-        std::string specjalne_znk[32] = { "!", "@", "#", "$", "%", "^", "&", "*", "(", ")", "_", "+", "-", "=", "`", "~", "{", "}", "[", "]", ":", ";", "'", "\"", ",", ".", "/", "<", ">", "?", "|", "\\" };
-        int wstrzymanie_specjalne = 0;
-        for (int i = 0; i < 32; i++) {
-            if (wstrzymanie_specjalne == 2) {
-                break;
-            }
-            if (ilosc_znakow % 2 == 0 && nazwa_dlugosc % 2 != 0 && i > 8 && ilosc_znakow > 0 && wstrzymanie_specjalne <= 2) {
-                losowe_haslo += specjalne_znk[i + 1];
-                wstrzymanie_specjalne++;
-                wprowadzone_znaki++;
-                i++;
-            }
-            if (ilosc_znakow % 2 == 0 && nazwa_dlugosc % 2 == 0 && i > 6 && ilosc_znakow > 1 && wstrzymanie_specjalne <= 2) {
-                losowe_haslo += specjalne_znk[i + 2];
-                wstrzymanie_specjalne++;
-                wprowadzone_znaki++;
-                i++;
-            }
-            if (ilosc_znakow % 2 != 0 && nazwa_dlugosc % 2 == 0 && i > 4 && ilosc_znakow > 2 && wstrzymanie_specjalne <= 2) {
-                losowe_haslo += specjalne_znk[i + 4];
-                wstrzymanie_specjalne++;
-                wprowadzone_znaki++;
-                i++;
-            }
-            if (ilosc_znakow % 2 != 0 && nazwa_dlugosc % 2 != 0 && i > 0 && ilosc_znakow > 3 && wstrzymanie_specjalne <= 2) {
-                losowe_haslo += specjalne_znk[i + 5];
-                wstrzymanie_specjalne++;
-                wprowadzone_znaki++;
-                i++;
-            }
-        }
-    }
+    // Shuffle so guarantees aren’t at the front
+    std::shuffle(password.begin(), password.end(), gen);
 
-    std::string cyfry[10] = { "1", "2", "3", "4", "5", "6", "7", "8", "9", "0" };
-    int wstrzymanie_cyfry = 0;
-    for (int i = 0; i < 10; i++) {
-        if (wstrzymanie_cyfry == 2) {
-            break;
-        }
-        if (ilosc_znakow % 2 == 0 && nazwa_dlugosc % 2 != 0 && i > 3 && ilosc_znakow > 0 && wstrzymanie_cyfry <= 2) {
-            losowe_haslo += cyfry[i + 1];
-            wstrzymanie_cyfry++;
-            wprowadzone_znaki++;
-            i++;
-        }
-        if (ilosc_znakow % 2 == 0 && nazwa_dlugosc % 2 == 0 && i > 2 && ilosc_znakow > 1 && wstrzymanie_cyfry <= 2) {
-            losowe_haslo += cyfry[i + 2];
-            wstrzymanie_cyfry++;
-            wprowadzone_znaki++;
-            i++;
-        }
-        if (ilosc_znakow % 2 != 0 && nazwa_dlugosc % 2 == 0 && i > 1 && ilosc_znakow > 2 && wstrzymanie_cyfry <= 2) {
-            losowe_haslo += cyfry[i + 2];
-            wstrzymanie_cyfry++;
-            wprowadzone_znaki++;
-            i++;
-        }
-        if (ilosc_znakow % 2 != 0 && nazwa_dlugosc % 2 != 0 && i >= 0 && ilosc_znakow > 3 && wstrzymanie_cyfry <= 2) {
-            losowe_haslo += cyfry[i + 3];
-            wstrzymanie_cyfry++;
-            wprowadzone_znaki++;
-            i++;
-        }
-    }
-
-    int ilosc_pozostalych = ilosc_znakow - wprowadzone_znaki;
-    std::string alfabet[26] = { "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z" };
-    int ktora_litera = 0;
-    int wstrzymanie_alfabet = 0;
-    for (int i = 0; i < ilosc_pozostalych; i++) {
-        if (ktora_litera >= 26) {
-            ktora_litera = 1;
-        }
-        if (wstrzymanie_alfabet == ilosc_pozostalych) {
-            break;
-        }
-        if (ilosc_znakow % 2 != 0 && nazwa_dlugosc % 2 != 0 && ilosc_pozostalych % 2 != 0) {
-            losowe_haslo += alfabet[ktora_litera];
-            ktora_litera += 8;
-            wstrzymanie_alfabet++;
-        }
-        if (ilosc_znakow % 2 == 0 && nazwa_dlugosc % 2 == 0 && ilosc_pozostalych % 2 == 0) {
-            losowe_haslo += alfabet[ktora_litera];
-            ktora_litera += 8;
-            wstrzymanie_alfabet++;
-        }
-        if (ilosc_znakow % 2 != 0 && nazwa_dlugosc % 2 == 0 && ilosc_pozostalych % 2 == 0) {
-            losowe_haslo += alfabet[ktora_litera];
-            ktora_litera += 8;
-            wstrzymanie_alfabet++;
-        }
-        if (ilosc_znakow % 2 != 0 && nazwa_dlugosc % 2 != 0 && ilosc_pozostalych % 2 == 0) {
-            losowe_haslo += alfabet[ktora_litera];
-            ktora_litera += 8;
-            wstrzymanie_alfabet++;
-        }
-        if (ilosc_znakow % 2 != 0 && nazwa_dlugosc % 2 == 0 && ilosc_pozostalych % 2 != 0) {
-            losowe_haslo += alfabet[ktora_litera];
-            ktora_litera += 8;
-            wstrzymanie_alfabet++;
-        }
-        if (ilosc_znakow % 2 == 0 && nazwa_dlugosc % 2 == 0 && ilosc_pozostalych % 2 != 0) {
-            losowe_haslo += alfabet[ktora_litera];
-            ktora_litera += 8;
-            wstrzymanie_alfabet++;
-        }
-        if (ilosc_znakow % 2 != 0 && nazwa_dlugosc % 2 == 0 && ilosc_pozostalych % 2 == 0) {
-            losowe_haslo += alfabet[ktora_litera];
-            ktora_litera += 8;
-            wstrzymanie_alfabet++;
-        }
-        if (ilosc_znakow % 2 == 0 && nazwa_dlugosc % 2 != 0 && ilosc_pozostalych % 2 == 0) {
-            losowe_haslo += alfabet[ktora_litera];
-            ktora_litera += 8;
-            wstrzymanie_alfabet++;
-        }
-    }
-
-    return losowe_haslo;
+    return password;
 }
 
 
 /**
- * Haslo jest sprawdzane pod katem posiadania odpowiendihc znakow
- * Sumy znakow w hasle sa nastepnie sprawdzane wedlug kryteriow bezpieczenstwa
+ * Veryfing the password strenght based on some general criteria
  *
- * @param haslo haslo ktorego sila jest sprawdzana
- * @return w zaleznosci od posiadanych przez haslo cech zwracany jest stopien jego bezpieczenstwa
+ * @param password - password that is beign verified
+ * @return quality of the password in a string 
  */
-std::string sprawdzanieSilyHasla(std::string haslo) {
-    std::string sila_hasla;
-    int male_litery = 0;
-    int wielkie_litery = 0;
-    int znaki_specjalne = 0;
-    int cyfry = 0;
-    int znaki = 0;
+std::string password_strength_verifier(std::string password) {
+    int lowercaseCount = 0;
+    int uppercaseCount = 0;
+    int digitCount     = 0;
+    int specialCount   = 0;
 
-    for (size_t i = 0; i < haslo.length(); i++) {
-        if (haslo[i] >= 97 && haslo[i] <= 122) {
-            male_litery++;
-            znaki++;
-        }
-        if (haslo[i] >= 65 && haslo[i] <= 90) {
-            wielkie_litery++;
-            znaki++;
-        }
-        if (haslo[i] >= 48 && haslo[i] <= 57) {
-            cyfry++;
-            znaki++;
-        }
-        if ((haslo[i] >= 0 && haslo[i] <= 47) || (haslo[i] >= 58 && haslo[i] <= 64) || (haslo[i] >= 91 && haslo[i] <= 96) || (haslo[i] >= 123 && haslo[i] <= 127)) {
-            znaki_specjalne++;
-            znaki++;
+    for (unsigned char ch : password) {
+        if (std::islower(ch)) {
+            ++lowercaseCount;
+        } 
+        else if (std::isupper(ch)) {
+            ++uppercaseCount;
+        } 
+        else if (std::isdigit(ch)) {
+            ++digitCount;
+        } 
+        else if (std::isprint(ch) && !std::isalnum(ch)) {
+            ++specialCount;
         }
     }
 
-    if (znaki >= 12 && male_litery > 3 && wielkie_litery > 3 && cyfry > 2 && znaki_specjalne >= 2) {
-        sila_hasla = "Swietne";
+    const int password_length = password.size();
+
+    if (password_length >= 12 && lowercaseCount > 3 && uppercaseCount > 3 && digitCount > 2 && specialCount >= 2) {
+        return "Excelent";
     }
-    else if (znaki >= 9 && male_litery > 2 && wielkie_litery > 2 && cyfry >= 2) {
-        sila_hasla = "Dobre";
+    if (password_length >= 9 && lowercaseCount > 2 && uppercaseCount > 2 && digitCount >= 2) {
+        return "Good";
     }
-    else if (znaki >= 8 && male_litery >= 1 && wielkie_litery >= 1 && cyfry >= 1) {
-        sila_hasla = "Srednie";
+    if (password_length >= 8 && lowercaseCount >= 1 && uppercaseCount >= 1 && digitCount >= 1) {
+        return "Bad";
     }
-    else if (znaki > 4 && znaki < 8) {
-        sila_hasla = "Slabe";
-    }
-    else {
-        sila_hasla = "Niebezpieczne";
+    if (password_length > 4 && password_length < 8) {
+        return "Terrible";
     }
 
-    return sila_hasla;
+    return "Dangerous";
 }
 
 

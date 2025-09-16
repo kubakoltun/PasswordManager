@@ -27,7 +27,7 @@ std::string szyfrujWejscie(std::string fraza) {
  * Petla przesuwa znaki ASCII stringa do przed szyfrowaniem
  *
  * @param rozFraza string ktory ma zostac rozszyfrowany
- * @return zwracany jest rozszyfrowany coag znakow
+ * @return zwracany jest rozszyfrowany ciag znakow
  */
 std::string rozszyfrujFraze(std::string rozFraza) {
     size_t rozmiar_hasla = rozFraza.length();

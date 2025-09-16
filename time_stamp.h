@@ -3,4 +3,3 @@
 #include <string>
 
 std::string sprawdzCzas(const std::string& przelacznik);
-
