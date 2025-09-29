@@ -1,19 +1,16 @@
 #include "files.h"
 #include "time_stamp.h"
+#include <sys/stat.h>
 
 /**
- * Sprawdzenie czy podany plik istnieje
- * Struktura sprawdzajaca prawdziwosc warunku
+ * Checking whether the file passed in parameter exists via POSIX structure
  *
- * @param podanyPlik w momencie wywolania funkcji przez parametr jest przekazywana nazwa pliku, ktory jest poddawany sprawdzeniu
- * @return zwracana jest wartosc typu logicznego aby dac informacje czy prawda jest, ze plik istnieje
+ * @param file - file passed in argument
+ * @return boolean - tells whether the file exists or not
  */
-bool czyPlikIstnieje(const std::string& podanyPlik) {
-    struct stat buf {};
-    if (stat(podanyPlik.c_str(), &buf) != -1) {
-        return true;
-    }
-    return false;
+bool does_file_exist(const std::string& file) {
+    struct stat buf;
+    return (stat(file.c_str(), &buf) == 0);
 }
 
 /**
@@ -31,7 +28,7 @@ bool czyPlikIstnieje(const std::string& podanyPlik) {
  */
 std::string odczytanieZawartosciPliku(const std::string& nazwaPliku, bool usuwanieHasla, bool usuwanieKategorii) {
 
-    if (czyPlikIstnieje(nazwaPliku)) {
+    if (does_file_exist(nazwaPliku)) {
         std::ifstream obecnyPlik;
         std::vector<std::string> linie;
         std::string obecnaLinia;
@@ -171,7 +168,7 @@ std::string odczytanieZawartosciPliku(const std::string& nazwaPliku, bool usuwan
  */
 std::string wpisanieDoPliku(std::string nazwaPliku, const std::string& nazwa, const std::string& haslo, std::string kategoria, const std::string& login, const std::string& strona) {
 
-    if (czyPlikIstnieje(nazwaPliku)) {
+    if (does_file_exist(nazwaPliku)) {
         std::ofstream biezacyPlik;
         biezacyPlik.open(nazwaPliku);
         if (!nazwa.empty()) {
@@ -252,7 +249,7 @@ std::string wpisanieDoPliku(std::string nazwaPliku, const std::string& nazwa, co
  * @param wprowadzonoDwa wartosc drugiego parametru podanego przez uzytkownika
  */
 void sortowaniePoParametrach(const std::string& nazwaPliku, const std::string& parametr, const std::string& parametrDrugi, const std::string& wprowadzono, const std::string& wprowadzonoDwa) {
-    if (czyPlikIstnieje(nazwaPliku)) {
+    if (does_file_exist(nazwaPliku)) {
         std::ifstream obecnyPlik;
         std::vector<std::string> linie;
         std::string obecnaLinia;

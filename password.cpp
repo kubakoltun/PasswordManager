@@ -57,7 +57,6 @@ std::string generate_password(int length, bool use_uppercase, bool use_special, 
     return password;
 }
 
-
 /**
  * Veryfing the password strenght based on some general criteria
  *
@@ -103,7 +102,6 @@ std::string password_strength_verifier(std::string password) {
     return "Dangerous";
 }
 
-
 /**
  * Zawartosc pliku jest wprowadzana do wektora
  * Jednoczesnie uzytkownikowi wyswietlana jest lista hasel
@@ -113,9 +111,9 @@ std::string password_strength_verifier(std::string password) {
  * @param nazwaPliku nazwa pliku, na ktorym bedzie wykonywana operacja
  * @return zwracany jest komunikat o pomyslnosci dzialania
  */
-std::string edycjaHasla(const std::string& nazwaPliku) {
+std::string password_edition(const std::string& nazwaPliku) {
 
-    if (czyPlikIstnieje(nazwaPliku)) {
+    if (does_file_exist(nazwaPliku)) {
         std::ifstream obecnyPlik;
         std::vector<std::string> linie;
         std::string obecnaLinia;
@@ -218,7 +216,7 @@ std::string edycjaHasla(const std::string& nazwaPliku) {
  * @param parametr klucz wartosci parametru wprowadzony w zaleznosci od wybranej przez uzytkownika opcji szukania
  */
 void wyszukajHaslo(const std::string& nazwaPliku, const std::string& szukaneHaslo, const std::string& parametr) {
-    if (czyPlikIstnieje(nazwaPliku)) {
+    if (does_file_exist(nazwaPliku)) {
         std::ifstream obecnyPlik;
         std::vector<std::string> linie;
         std::string obecnaLinia;
@@ -298,7 +296,7 @@ void wyszukajHaslo(const std::string& nazwaPliku, const std::string& szukaneHasl
  */
 std::string wyszukajWszystkieHasla(const std::string& nazwaPliku, const std::string& szukaneHaslo) {
     std::string komunikat;
-    if (czyPlikIstnieje(nazwaPliku)) {
+    if (does_file_exist(nazwaPliku)) {
         std::ifstream obecnyPlik;
         std::vector<std::string> linie;
         std::string obecnaLinia;

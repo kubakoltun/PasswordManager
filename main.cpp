@@ -13,7 +13,7 @@ int main() {
         std::cout << ">";
         std::getline(std::cin >> std::ws, glownyPlik);
 
-        if (!czyPlikIstnieje(glownyPlik)) {
+        if (!does_file_exist(glownyPlik)) {
             std::cout << "Wprowadzona nazwa lub sciezka pliku nie istnieje: \"" << glownyPlik << "\" wprowadz poprawna nazwe lub sicezke pliku." << std::endl;
             powtorz = true;
         } else {
@@ -370,7 +370,7 @@ int main() {
         }
         else if (x == "4" || x == "4.") {
             std::cout << "Lista Twoich hasel: " << std::endl;
-            std::cout << edycjaHasla(glownyPlik) << std::endl;
+            std::cout << password_edition(glownyPlik) << std::endl;
             powtorz = true;
         }
         else if (x == "5" || x == "5.") {
