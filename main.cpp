@@ -1,28 +1,29 @@
 #include <iostream>
 #include <string>
-
 #include "password.h"
 
 int main() {
-    bool powtorz = false;
-    std::string glownyPlik;
+    bool retry = false;
+    std::string mainFile;
 
     do {
-        powtorz = false;
+        retry = false;
         std::cout << "Podaj nazwe pliku znajdujacego sie w obecnym folderze lub sciezke absolutna, aby skorzystac z programu:" << std::endl;
         std::cout << ">";
-        std::getline(std::cin >> std::ws, glownyPlik);
+        std::getline(std::cin >> std::ws, mainFile);
 
-        if (!does_file_exist(glownyPlik)) {
-            std::cout << "Wprowadzona nazwa lub sciezka pliku nie istnieje: \"" << glownyPlik << "\" wprowadz poprawna nazwe lub sicezke pliku." << std::endl;
-            powtorz = true;
-        } else {
-            powtorz = false;
+        if (!does_file_exist(mainFile)) {
+            std::cout << "Wprowadzona nazwa lub sciezka pliku nie istnieje: \"" << mainFile << "\" wprowadz poprawna nazwe lub sicezke pliku." << std::endl;
+            retry = true;
+        } 
+        else {
+            // todo make a master password for the main file
+            retry = false;
         }
-    } while (powtorz);
+    } while (retry);
 
     do {
-        powtorz = false;
+        retry = false;
         std::string x;
         std::cout << "Wybierz interesujaca Cie komende, wpisujac jej numer: \n 1. Wyszukaj hasla \n 2. Posortuj hasla \n 3. Dodaj haslo \n 4. Edytuj haslo \n 5. Usun haslo \n 6. Dodaj kategorie \n 7. Usun kategorie \n 0. Wyjscie" << std::endl;
         std::cout << ">";
@@ -31,7 +32,7 @@ int main() {
         if (x == "1" || x == "1.") {
 
             do {
-                powtorz = false;
+                retry = false;
                 std::string wyszukaj_hasla;
                 std::cout << "Wybierz zgodnie z czym chesz wyszukac swoje haslo:" << std::endl;
                 std::cout << " 1. Wyszukaj hasla po nazwie" << std::endl;
@@ -48,7 +49,7 @@ int main() {
                     std::getline(std::cin >> std::ws, wh_nazwa);
 
                     std::cout << "Wyniki wyszukiwania:" << std::endl;
-                    wyszukajHaslo(glownyPlik, wh_nazwa, "Nazwa: ");
+                    wyszukajHaslo(mainFile, wh_nazwa, "Nazwa: ");
 
                 }
                 else if (wyszukaj_hasla == "2" || wyszukaj_hasla == "2.") {
@@ -58,7 +59,7 @@ int main() {
                     std::getline(std::cin >> std::ws, wh_kategoria);
 
                     std::cout << "Wyniki wyszukiwania:" << std::endl;
-                    wyszukajHaslo(glownyPlik, wh_kategoria, "Kategoria: ");
+                    wyszukajHaslo(mainFile, wh_kategoria, "Kategoria: ");
 
                 }
                 else if (wyszukaj_hasla == "3" || wyszukaj_hasla == "3.") {
@@ -69,7 +70,7 @@ int main() {
                     std::getline(std::cin >> std::ws, wh_strona);
 
                     std::cout << "Wyniki wyszukiwania:" << std::endl;
-                    wyszukajHaslo(glownyPlik, wh_strona, "Strona WWW: ");
+                    wyszukajHaslo(mainFile, wh_strona, "Strona WWW: ");
 
                 }
                 else if (wyszukaj_hasla == "4" || wyszukaj_hasla == "4.") {
@@ -79,19 +80,18 @@ int main() {
                     std::getline(std::cin >> std::ws, wh_login);
 
                     std::cout << "Wyniki wyszukiwania:" << std::endl;
-                    wyszukajHaslo(glownyPlik, wh_login, "Login: ");
+                    wyszukajHaslo(mainFile, wh_login, "Login: ");
 
                 } else {
                     std::cout << "Nie znaleziono Twojej komendy: \"" << wyszukaj_hasla << "\". \nSprobuj ponownie wprowadzic cyfre reprezentujaca dana komende.\n" << std::endl;
-                    powtorz = true;
+                    retry = true;
                 }
-            } while (powtorz);
-            powtorz = true;
+            } while (retry);
+            retry = true;
         }
         else if (x == "2" || x == "2.") {
-
             do {
-                powtorz = false;
+                retry = false;
                 std::string parametr_sorotwania;
                 std::string parametr_sorotwaniaDwa;
                 std::string nazwa_sorotwania;
@@ -115,13 +115,13 @@ int main() {
                     std::getline(std::cin >> std::ws, nazwa_sorotwania);
 
                     do {
-                        powtorz = false;
+                        retry = false;
                         std::cout << "Czy dodac drugi parametr sortowania? Wpisz \"tak\", aby wprowadzic lub \"-\", aby pominac." << std::endl;
                         std::cout << ">";
                         std::cin >> kolejny_parametr;
                         if (kolejny_parametr == "tak") {
                             do {
-                                powtorz = false;
+                                retry = false;
                                 std::cout << "Wpisz parametr wobec, ktorego maja byc sortowane hasla (\"Kategoria\", \"Strona WWW\", \"Login\")." << std::endl;
                                 std::cout << ">";
                                 std::getline(std::cin >> std::ws, parametr_sorotwaniaDwa);
@@ -135,20 +135,20 @@ int main() {
                                     parametr_sorotwaniaDwa = "Login: ";
                                 } else {
                                     std::cout << "Wprowadzono bledny parametr, zwroc uwage na wypisane w nawiasie dostepne parametry." << std::endl;
-                                    powtorz = true;
+                                    retry = true;
                                 }
-                            } while (powtorz);
+                            } while (retry);
                             std::cout << "Wpisz wartosc podanego parametru:" << std::endl;
                             std::cout << ">";
                             std::getline(std::cin >> std::ws, wartosc_parametru);
                         }
                         else if (kolejny_parametr != "tak" && kolejny_parametr != "-") {
                             std::cout << "Nie rozmozpano Twojej komendy \"" << kolejny_parametr << "\", zwroc uwage aby nie wpisywac znakow specjalnych." << std::endl;
-                            powtorz = true;
+                            retry = true;
                         }
-                    } while (powtorz);
+                    } while (retry);
                     std::cout << "Posortowana lista: " << std::endl;
-                    sortowaniePoParametrach(glownyPlik, "Nazwa: ", parametr_sorotwaniaDwa, nazwa_sorotwania, wartosc_parametru);
+                    sortowaniePoParametrach(mainFile, "Nazwa: ", parametr_sorotwaniaDwa, nazwa_sorotwania, wartosc_parametru);
                 }
                 else if (parametr_sorotwania == "2" || parametr_sorotwania == "2.") {
                     std::cout << "Wpisz kategorie, wedlug ktorej maja zostac posotrowane hasla:" << std::endl;
@@ -156,14 +156,14 @@ int main() {
                     std::getline(std::cin >> std::ws, kategoria_sorotwania);
 
                     do {
-                        powtorz = false;
+                        retry = false;
                         std::cout << "Czy dodac drugi parametr sortowania? Wpisz \"tak\", aby wprowadzic lub \"-\", aby pominac." << std::endl;
                         std::cout << ">";
                         std::cin >> kolejny_parametr;
                         if (kolejny_parametr == "tak") {
 
                             do {
-                                powtorz = false;
+                                retry = false;
                                 std::cout << "Wpisz parametr wobec, ktorego maja byc sortowane hasla (\"Nazwa\", \"Strona WWW\", \"Login\")." << std::endl;
                                 std::cout << ">";
                                 std::getline(std::cin >> std::ws, parametr_sorotwaniaDwa);
@@ -178,20 +178,20 @@ int main() {
                                 }
                                 else {
                                     std::cout << "Wprowadzono bledny parametr, zwroc uwage na wypisane w nawiasie dostepne parametry." << std::endl;
-                                    powtorz = true;
+                                    retry = true;
                                 }
-                            } while (powtorz);
+                            } while (retry);
                             std::cout << "Wpisz wartosc podanego parametru:" << std::endl;
                             std::cout << ">";
                             std::getline(std::cin >> std::ws, wartosc_parametru);
                         }
                         else if (kolejny_parametr != "tak" && kolejny_parametr != "-") {
                             std::cout << "Nie rozmozpano Twojej komendy \"" << kolejny_parametr << "\", zwroc uwage aby nie wpisywac znakow specjalnych." << std::endl;
-                            powtorz = true;
+                            retry = true;
                         }
-                    } while (powtorz);
+                    } while (retry);
                     std::cout << "Posortowana lista: " << std::endl;
-                    sortowaniePoParametrach(glownyPlik, "Kategoria: ", parametr_sorotwaniaDwa, nazwa_sorotwania, wartosc_parametru);
+                    sortowaniePoParametrach(mainFile, "Kategoria: ", parametr_sorotwaniaDwa, nazwa_sorotwania, wartosc_parametru);
                 }
                 else if (parametr_sorotwania == "3" || parametr_sorotwania == "3.") {
                     std::cout << "Wpisz strone, wedlug ktorej maja zostac posotrowane hasla:" << std::endl;
@@ -199,14 +199,14 @@ int main() {
                     std::getline(std::cin >> std::ws, strona_sorotwania);
 
                     do {
-                        powtorz = false;
+                        retry = false;
                         std::cout << "Czy dodac drugi parametr sortowania? Wpisz \"tak\", aby wprowadzic lub \"-\", aby pominac." << std::endl;
                         std::cout << ">";
                         std::cin >> kolejny_parametr;
                         if (kolejny_parametr == "tak") {
 
                             do {
-                                powtorz = false;
+                                retry = false;
                                 std::cout << "Wpisz parametr wobec, ktorego maja byc sortowane hasla (\"Nazwa\", \"Kategoria\", \"Login\")." << std::endl;
                                 std::cout << ">";
                                 std::getline(std::cin >> std::ws, parametr_sorotwaniaDwa);
@@ -220,20 +220,20 @@ int main() {
                                     parametr_sorotwaniaDwa = "Login: ";
                                 } else {
                                     std::cout << "Wprowadzono bledny parametr, zwroc uwage na wypisane w nawiasie dostepne parametry." << std::endl;
-                                    powtorz = true;
+                                    retry = true;
                                 }
-                            } while (powtorz);
+                            } while (retry);
                             std::cout << "Wpisz wartosc podanego parametru:" << std::endl;
                             std::cout << ">";
                             std::getline(std::cin >> std::ws, wartosc_parametru);
                         }
                         else if (kolejny_parametr != "tak" && kolejny_parametr != "-") {
                             std::cout << "Nie rozmozpano Twojej komendy \"" << kolejny_parametr << "\", zwroc uwage aby nie wpisywac znakow specjalnych." << std::endl;
-                            powtorz = true;
+                            retry = true;
                         }
-                    } while (powtorz);
+                    } while (retry);
                     std::cout << "Posortowana lista: " << std::endl;
-                    sortowaniePoParametrach(glownyPlik, "Strona WWW: ", parametr_sorotwaniaDwa, nazwa_sorotwania, wartosc_parametru);
+                    sortowaniePoParametrach(mainFile, "Strona WWW: ", parametr_sorotwaniaDwa, nazwa_sorotwania, wartosc_parametru);
                 }
                 else if (parametr_sorotwania == "4" || parametr_sorotwania == "4.") {
                     std::cout << "Wpisz login, wedlug ktorego maja zostac posotrowane hasla:" << std::endl;
@@ -241,13 +241,13 @@ int main() {
                     std::getline(std::cin >> std::ws, login_sorotwania);
 
                     do {
-                        powtorz = false;
+                        retry = false;
                         std::cout << "Czy dodac drugi parametr sortowania? Wpisz \"tak\", aby wprowadzic lub \"-\", aby pominac." << std::endl;
                         std::cout << ">";
                         std::cin >> kolejny_parametr;
                         if (kolejny_parametr == "tak") {
                             do {
-                                powtorz = false;
+                                retry = false;
                                 std::cout << "Wpisz parametr wobec, ktorego maja byc sortowane hasla (\"Nazwa\", \"Kategoria\", \"Strona WWW\")." << std::endl;
                                 std::cout << ">";
                                 std::getline(std::cin >> std::ws, parametr_sorotwaniaDwa);
@@ -262,27 +262,27 @@ int main() {
                                 }
                                 else {
                                     std::cout << "Wprowadzono bledny parametr, zwroc uwage na wypisane w nawiasie dostepne parametry." << std::endl;
-                                    powtorz = true;
+                                    retry = true;
                                 }
-                            } while (powtorz);
+                            } while (retry);
                             std::cout << "Wpisz wartosc podanego parametru:" << std::endl;
                             std::cout << ">";
                             std::getline(std::cin >> std::ws, wartosc_parametru);
                         }
                         else if (kolejny_parametr != "tak" && kolejny_parametr != "-") {
                             std::cout << "Nie rozmozpano Twojej komendy \"" << kolejny_parametr << "\", zwroc uwage aby nie wpisywac znakow specjalnych." << std::endl;
-                            powtorz = true;
+                            retry = true;
                         }
-                    } while (powtorz);
+                    } while (retry);
                     std::cout << "Posortowana lista: " << std::endl;
-                    sortowaniePoParametrach(glownyPlik, "Login: ", parametr_sorotwaniaDwa, nazwa_sorotwania, wartosc_parametru);
+                    sortowaniePoParametrach(mainFile, "Login: ", parametr_sorotwaniaDwa, nazwa_sorotwania, wartosc_parametru);
                 }
                 else {
                     std::cout << "Nie znaleziono Twojej komendy: \"" << parametr_sorotwania << "\". \nSprobuj ponownie wprowadzic cyfre reprezentujaca dana komende.\n" << std::endl;
-                    powtorz = true;
+                    retry = true;
                 }
-            } while (powtorz);
-            powtorz = true;
+            } while (retry);
+            retry = true;
         }
         else if (x == "3" || x == "3.") {
             std::string nazwa;
@@ -312,7 +312,7 @@ int main() {
             std::getline(std::cin >> std::ws, login);
 
             do {
-                powtorz = false;
+                retry = false;
                 std::cout << "Czy wygenerowac haslo?\nWpisz \"tak\" jezeli chcesz aby Twoje haslo zostalo wygenerowane, aby pominac wpisz \"-\":" << std::endl;
                 std::cout << ">";
                 std::cin >> czy_wygenerowac_haslo;
@@ -322,7 +322,7 @@ int main() {
                     std::cout << ">";
                     std::cin >> ilosc_znakow_generowanego_hasla;
                     do {
-                        powtorz = false;
+                        retry = false;
                         std::cout << "Czy haslo ma zawierac wielkie i male litery, \"tak\" aby uwzglednic, \"-\", aby pominac:" << std::endl;
                         std::cout << ">";
                         std::cin >> wielkie_znaki_generowane_haslo;
@@ -331,11 +331,11 @@ int main() {
                         }
                         else if (wielkie_znaki_generowane_haslo != "tak" && wielkie_znaki_generowane_haslo != "-") {
                             std::cout << "Nie rozpoznano Twojej komendy \"" << wielkie_znaki_generowane_haslo << "\", wpisz \"tak\" aby uwzglednic male i wielkie litrey, \"-\", aby pominac." << std::endl;
-                            powtorz = true;
+                            retry = true;
                         }
-                    } while (powtorz);
+                    } while (retry);
                     do {
-                        powtorz = false;
+                        retry = false;
                         std::cout << "Czy haslo ma zawierac znaki specjalne, \"tak\" aby uwzglednic, \"-\" aby pominac:" << std::endl;
                         std::cout << ">";
                         std::cin >> specjalne_znaki_generowane_haslo;
@@ -344,9 +344,9 @@ int main() {
                         }
                         else if (specjalne_znaki_generowane_haslo != "tak" && specjalne_znaki_generowane_haslo != "-") {
                             std::cout << "Nie rozpoznano Twojej komendy \" " << specjalne_znaki_generowane_haslo << "\", wpisz \"tak\" aby uwzglednic male i wielkie litrey, \"-\", aby pominac." << std::endl;
-                            powtorz = true;
+                            retry = true;
                         }
-                    } while (powtorz);
+                    } while (retry);
 
                     haslo = generate_password(ilosc_znakow_generowanego_hasla, czy_wielkie_znaki, czy_specjalne_znaki, nazwa);
                     std::cout << "Wygenerowane haslo: " << haslo << std::endl;
@@ -357,47 +357,47 @@ int main() {
                     std::cout << ">";
                     std::cin >> haslo;
                     std::cout << "Haslo jest " << password_strength_verifier(haslo) << "!" << std::endl;
-                    std::cout << wyszukajWszystkieHasla(glownyPlik, haslo) << std::endl;
+                    std::cout << wyszukajWszystkieHasla(mainFile, haslo) << std::endl;
                 }
                 else {
                     std::cout << "Nie rozpoznano komendy \"" << czy_wygenerowac_haslo << "\", aby wygenerowac haslo wpisz \"tak\", aby pominac wpisz \"-\"." << std::endl;
-                    powtorz = true;
+                    retry = true;
                 }
-            } while (powtorz);
+            } while (retry);
 
-            std::cout << "Pomyslnie wprowadzono haslo do pliku: " << wpisanieDoPliku(glownyPlik, nazwa, haslo, kategoria, login, strona) << std::endl;
-            powtorz = true;
+            std::cout << "Pomyslnie wprowadzono haslo do pliku: " << wpisanieDoPliku(mainFile, nazwa, haslo, kategoria, login, strona) << std::endl;
+            retry = true;
         }
         else if (x == "4" || x == "4.") {
             std::cout << "Lista Twoich hasel: " << std::endl;
-            std::cout << password_edition(glownyPlik) << std::endl;
-            powtorz = true;
+            std::cout << password_edition(mainFile) << std::endl;
+            retry = true;
         }
         else if (x == "5" || x == "5.") {
             std::string usuniecie_hasla;
             std::cout << "Lista Twoich hasel: " << std::endl;
-            std::cout << odczytanieZawartosciPliku(glownyPlik, true, false) << std::endl;
-            powtorz = true;
+            std::cout << odczytanieZawartosciPliku(mainFile, true, false) << std::endl;
+            retry = true;
         }
         else if (x == "6" || x == "6.") {
             std::string nowa_kategoria;
             std::cout << "Wprowadz nazwe nowej kategorii:" << std::endl;
             std::cout << ">";
             std::getline(std::cin >> std::ws, nowa_kategoria);
-            std::cout << "Wprowadzono nowa kategorie do pliku: " << wpisanieDoPliku(glownyPlik, "", "", nowa_kategoria, "-", "-");
-            powtorz = true;
+            std::cout << "Wprowadzono nowa kategorie do pliku: " << wpisanieDoPliku(mainFile, "", "", nowa_kategoria, "-", "-");
+            retry = true;
         }
         else if (x == "7" || x == "7.") {
             std::cout << "Lista Twoich kategorii wraz z przypisanymi do nich haslami: " << std::endl;
-            std::cout << odczytanieZawartosciPliku(glownyPlik, false, true) << std::endl;
-            powtorz = true;
+            std::cout << odczytanieZawartosciPliku(mainFile, false, true) << std::endl;
+            retry = true;
         }
         else if (x == "0" || x == "0.") {
-            powtorz = false;
+            retry = false;
         }
         else {
             std::cout << "Nie znaleziono Twojej komendy: \"" << x << "\". \nSprobuj ponownie wprowadzic cyfre reprezentujaca dana komende.\n" << std::endl;
-            powtorz = true;
+            retry = true;
         }
-    } while (powtorz);
+    } while (retry);
 }
