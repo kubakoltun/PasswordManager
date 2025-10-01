@@ -2,42 +2,24 @@
 #include <string>
 
 /**
- * Impementacja metody szyfrowania
- * Przekazany string trafia do petli, w ktorej kazdy jego znak ASCII zostaje przesuniety
+ * String passed in the parameter gets its ASCII characters moved to either encrypt or decrypt its value
+ * Shifting the char to the next value (+1) is considered a encryption
+ * Shifting the chat to the previous value (-1) is considered a decryption
  *
- * @param fraza przekazany string staje sie baza do wprowadzenia szyfru
- * @return zwracany zostaje poddany szyfrowaniu ciag znakow
+ * @param inputString parameter that will be encrypted
+ * @param isEncription decides whether its a encryption or decryption, default true = encryption
+ * @return encrypted argument
  */
-std::string szyfrujWejscie(std::string fraza) {
-    size_t rozmiar_hasla = fraza.length();
-    std::string szyfr;
-    char trzym = ' ';
-    for (size_t i = 0; i < rozmiar_hasla; i++) {
-        trzym = fraza[i];
-        trzym += 1;
-        szyfr += trzym;
+std::string encrypt_decrypt_input(std::string inputString, bool isEncription = true) {
+    size_t stringLength = inputString.length();
+    std::string encryptedString;
+    char tmpCharShift = ' ';
+
+    for (size_t i = 0; i < stringLength; i++) {
+        tmpCharShift = inputString[i];
+        tmpCharShift = isEncription ? tmpCharShift+1 : tmpCharShift-1;
+        encryptedString += tmpCharShift;
     }
 
-    return szyfr;
-}
-
-/**
- * Przekazywana jest zaszyfrowana tresc
- * String zostaje odszyfrowany
- * Petla przesuwa znaki ASCII stringa do przed szyfrowaniem
- *
- * @param rozFraza string ktory ma zostac rozszyfrowany
- * @return zwracany jest rozszyfrowany ciag znakow
- */
-std::string rozszyfrujFraze(std::string rozFraza) {
-    size_t rozmiar_hasla = rozFraza.length();
-    std::string rozszyfrowane;
-    char otrzym = ' ';
-    for (size_t i = 0; i < rozmiar_hasla; i++) {
-        otrzym = rozFraza[i];
-        otrzym -= 1;
-        rozszyfrowane += otrzym;
-    }
-
-    return rozszyfrowane;
+    return encryptedString;
 }

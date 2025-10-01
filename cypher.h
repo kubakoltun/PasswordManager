@@ -1,4 +1,3 @@
 #pragma once
 
-std::string szyfrujWejscie(std::string fraza);
-std::string rozszyfrujFraze(std::string rozFraza);
+std::string encrypt_decrypt_input(std::string inputString, bool isEncription = true);

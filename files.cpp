@@ -6,7 +6,7 @@
  * Checking whether the file passed in parameter exists via POSIX structure
  *
  * @param file - file passed in argument
- * @return boolean - tells whether the file exists or not
+ * @return bool - tells whether the file exists or not
  */
 bool does_file_exist(const std::string& file) {
     struct stat buf;
@@ -40,20 +40,20 @@ std::string odczytanieZawartosciPliku(const std::string& nazwaPliku, bool usuwan
         while (getline(obecnyPlik, obecnaLinia)) {
             linie.push_back(obecnaLinia);
             if (usuwanieHasla) {
-                if (obecnaLinia.find(szyfrujWejscie("Haslo: ")) != std::string::npos) {
+                if (obecnaLinia.find(encrypt_decrypt_input("Haslo: ")) != std::string::npos) {
                     std::string usuwanieZbednej;
                     for (int i = 7; i < obecnaLinia.length(); i++) {
                         usuwanieZbednej += obecnaLinia[i];
                     }
-                    std::cout << wyswietlonaLinia << ". " << rozszyfrujFraze(obecnaLinia) << std::endl;
+                    std::cout << wyswietlonaLinia << ". " << encrypt_decrypt_input(obecnaLinia, false) << std::endl;
                 }
             }
             if (usuwanieKategorii) {
-                if (obecnaLinia.find(szyfrujWejscie("Kategoria: ")) != std::string::npos) {
-                    std::cout << wyswietlonaLinia << ". " << rozszyfrujFraze(obecnaLinia) << std::endl;
+                if (obecnaLinia.find(encrypt_decrypt_input("Kategoria: ")) != std::string::npos) {
+                    std::cout << wyswietlonaLinia << ". " << encrypt_decrypt_input(obecnaLinia, false) << std::endl;
                 }
-                if (obecnaLinia.find(szyfrujWejscie("Haslo: ")) != std::string::npos) {
-                    std::cout << " " << rozszyfrujFraze(obecnaLinia) << std::endl;
+                if (obecnaLinia.find(encrypt_decrypt_input("Haslo: ")) != std::string::npos) {
+                    std::cout << " " << encrypt_decrypt_input(obecnaLinia, false) << std::endl;
                 }
             }
             wyswietlonaLinia++;
@@ -139,7 +139,7 @@ std::string odczytanieZawartosciPliku(const std::string& nazwaPliku, bool usuwan
                 if (i == 33) {
                     zapisDoPliku << sprawdzCzas("s") << std::endl;
                 }
-                zapisDoPliku << szyfrujWejscie("1nied3ozla2man4ia5") << szyfrujWejscie(zmie) << std::endl;
+                zapisDoPliku << encrypt_decrypt_input("1nied3ozla2man4ia5") << encrypt_decrypt_input(zmie) << std::endl;
             }
         }
         zapisDoPliku.close();
@@ -172,17 +172,17 @@ std::string wpisanieDoPliku(std::string nazwaPliku, const std::string& nazwa, co
         std::ofstream biezacyPlik;
         biezacyPlik.open(nazwaPliku);
         if (!nazwa.empty()) {
-            biezacyPlik << szyfrujWejscie("Nazwa: ") << szyfrujWejscie(nazwa) << std::endl;
+            biezacyPlik << encrypt_decrypt_input("Nazwa: ") << encrypt_decrypt_input(nazwa) << std::endl;
         }
-        biezacyPlik << szyfrujWejscie("Kategoria: ") << szyfrujWejscie(std::move(kategoria)) << std::endl;
+        biezacyPlik << encrypt_decrypt_input("Kategoria: ") << encrypt_decrypt_input(std::move(kategoria)) << std::endl;
         if (strona != "-") {
-            biezacyPlik << szyfrujWejscie("Strona WWW: ") << szyfrujWejscie(strona) << std::endl;
+            biezacyPlik << encrypt_decrypt_input("Strona WWW: ") << encrypt_decrypt_input(strona) << std::endl;
         }
         if (login != "-") {
-            biezacyPlik << szyfrujWejscie("Login: ") << szyfrujWejscie(login) << std::endl;
+            biezacyPlik << encrypt_decrypt_input("Login: ") << encrypt_decrypt_input(login) << std::endl;
         }
         if (!haslo.empty()) {
-            biezacyPlik << szyfrujWejscie("Haslo: ") << szyfrujWejscie(haslo) << std::endl;
+            biezacyPlik << encrypt_decrypt_input("Haslo: ") << encrypt_decrypt_input(haslo) << std::endl;
         }
 
         biezacyPlik.close();
@@ -225,7 +225,7 @@ std::string wpisanieDoPliku(std::string nazwaPliku, const std::string& nazwa, co
                 if (i == 33) {
                     zapisDoPliku << sprawdzCzas("s") << std::endl;
                 }
-                zapisDoPliku << szyfrujWejscie("1nied3ozla2man4ia5") << szyfrujWejscie(zmie) << std::endl;
+                zapisDoPliku << encrypt_decrypt_input("1nied3ozla2man4ia5") << encrypt_decrypt_input(zmie) << std::endl;
             }
         }
         zapisDoPliku.close();
@@ -267,19 +267,19 @@ void sortowaniePoParametrach(const std::string& nazwaPliku, const std::string& p
         }
         std::string znaleziono;
         for (const auto& i : linie) {
-            if (i.find(szyfrujWejscie(poszukiwany)) != std::string::npos || i.find(szyfrujWejscie(poszukiwanyDrugi)) != std::string::npos) {
+            if (i.find(encrypt_decrypt_input(poszukiwany)) != std::string::npos || i.find(encrypt_decrypt_input(poszukiwanyDrugi)) != std::string::npos) {
                 przesuniecie = "1";
                 znaleziono = "0";
-                std::cout << rozszyfrujFraze(i) << std::endl;
+                std::cout << encrypt_decrypt_input(i, false) << std::endl;
             }
-            if (obecnaLinia.find(szyfrujWejscie("Haslo: ")) != std::string::npos && przesuniecie == "1" && znaleziono == "0") {
+            if (obecnaLinia.find(encrypt_decrypt_input("Haslo: ")) != std::string::npos && przesuniecie == "1" && znaleziono == "0") {
                 przesuniecie = "2";
-                std::cout << rozszyfrujFraze(i) << std::endl;
+                std::cout << encrypt_decrypt_input(i, false) << std::endl;
             }
-            if ((i.find(szyfrujWejscie(parametr)) != std::string::npos || i.find(szyfrujWejscie(parametrDrugi)) != std::string::npos) && znaleziono == "0" && przesuniecie == "2") {
+            if ((i.find(encrypt_decrypt_input(parametr)) != std::string::npos || i.find(encrypt_decrypt_input(parametrDrugi)) != std::string::npos) && znaleziono == "0" && przesuniecie == "2") {
                 std::cout << i << std::endl;
             }
-            if (i.find(szyfrujWejscie("Haslo: ")) != std::string::npos && znaleziono == "0" && przesuniecie == "2") {
+            if (i.find(encrypt_decrypt_input("Haslo: ")) != std::string::npos && znaleziono == "0" && przesuniecie == "2") {
                 std::cout << i << std::endl;
             }
         }
@@ -314,7 +314,7 @@ void sortowaniePoParametrach(const std::string& nazwaPliku, const std::string& p
                 if (i == 33) {
                     zapisDoPliku << sprawdzCzas("s") << std::endl;
                 }
-                zapisDoPliku << "1nied3ozla2man4ia5" << szyfrujWejscie(zmie) << std::endl;
+                zapisDoPliku << "1nied3ozla2man4ia5" << encrypt_decrypt_input(zmie) << std::endl;
             }
         }
         zapisDoPliku.close();

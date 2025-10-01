@@ -125,12 +125,12 @@ std::string password_edition(const std::string& nazwaPliku) {
         while (getline(obecnyPlik, obecnaLinia)) {
             linie.push_back(obecnaLinia);
 
-            if (obecnaLinia.find(szyfrujWejscie("Haslo: ")) != std::string::npos) {
+            if (obecnaLinia.find(encrypt_decrypt_input("Haslo: ")) != std::string::npos) {
                 std::string usuwanieZbednej;
                 for (int i = 7; i < obecnaLinia.length(); i++) {
                     usuwanieZbednej += obecnaLinia[i];
                 }
-                std::cout << wyswietlonaLinia << ". " << rozszyfrujFraze(usuwanieZbednej) << std::endl;
+                std::cout << wyswietlonaLinia << ". " << encrypt_decrypt_input(usuwanieZbednej, false) << std::endl;
             }
             wyswietlonaLinia++;
         }
@@ -176,7 +176,7 @@ std::string password_edition(const std::string& nazwaPliku) {
                 if (i == 33) {
                     zapisDoPliku << sprawdzCzas("s") << std::endl;
                 }
-                zapisDoPliku << szyfrujWejscie(edytowaneHaslo) << std::endl;
+                zapisDoPliku << encrypt_decrypt_input(edytowaneHaslo) << std::endl;
             }
         }
 
@@ -193,7 +193,7 @@ std::string password_edition(const std::string& nazwaPliku) {
                 if (i == 33) {
                     zapisDoPliku << sprawdzCzas("s") << std::endl;
                 }
-                zapisDoPliku << szyfrujWejscie("1nied3ozla2man4ia5") << szyfrujWejscie(zmie) << std::endl;
+                zapisDoPliku << encrypt_decrypt_input("1nied3ozla2man4ia5") << encrypt_decrypt_input(zmie) << std::endl;
             }
         }
         zapisDoPliku.close();
@@ -230,15 +230,15 @@ void wyszukajHaslo(const std::string& nazwaPliku, const std::string& szukaneHasl
         while (std::getline(obecnyPlik, obecnaLinia)) {
             linie.push_back(obecnaLinia);
 
-            if (obecnaLinia.find(szyfrujWejscie(poszukiwany)) != std::string::npos) {
-                std::cout << wyswietlonaLinia << ". " << rozszyfrujFraze(obecnaLinia) << std::endl;
+            if (obecnaLinia.find(encrypt_decrypt_input(poszukiwany)) != std::string::npos) {
+                std::cout << wyswietlonaLinia << ". " << encrypt_decrypt_input(obecnaLinia, false) << std::endl;
                 usuwanieZbednej = "";
             }
-            if (obecnaLinia.find(szyfrujWejscie("Haslo: ")) != std::string::npos && usuwanieZbednej.empty()) {
+            if (obecnaLinia.find(encrypt_decrypt_input("Haslo: ")) != std::string::npos && usuwanieZbednej.empty()) {
                 for (int i = 7; i < obecnaLinia.length(); i++) {
                     usuwanieZbednej += obecnaLinia[i];
                 }
-                std::cout << wyswietlonaLinia << ". " << rozszyfrujFraze(usuwanieZbednej) << std::endl;
+                std::cout << wyswietlonaLinia << ". " << encrypt_decrypt_input(usuwanieZbednej, false) << std::endl;
             }
             wyswietlonaLinia++;
         }
@@ -276,7 +276,7 @@ void wyszukajHaslo(const std::string& nazwaPliku, const std::string& szukaneHasl
                 if (i == 33) {
                     zapisDoPliku << sprawdzCzas("s") << std::endl;
                 }
-                zapisDoPliku << szyfrujWejscie("1nied3ozla2man4ia5") << szyfrujWejscie(zmie) << std::endl;
+                zapisDoPliku << encrypt_decrypt_input("1nied3ozla2man4ia5") << encrypt_decrypt_input(zmie) << std::endl;
             }
         }
         zapisDoPliku.close();
@@ -309,11 +309,11 @@ std::string wyszukajWszystkieHasla(const std::string& nazwaPliku, const std::str
         while (std::getline(obecnyPlik, obecnaLinia)) {
             linie.push_back(obecnaLinia);
 
-            if (obecnaLinia.find(szyfrujWejscie("Haslo: ")) != std::string::npos) {
+            if (obecnaLinia.find(encrypt_decrypt_input("Haslo: ")) != std::string::npos) {
                 for (int i = 7; i < obecnaLinia.length(); i++) {
                     usuwanieZbednej += obecnaLinia[i];
                 }
-                if (rozszyfrujFraze(usuwanieZbednej) == szukaneHaslo) {
+                if (encrypt_decrypt_input(usuwanieZbednej, false) == szukaneHaslo) {
                     ileRazy++;
                 }
             }
@@ -361,7 +361,7 @@ std::string wyszukajWszystkieHasla(const std::string& nazwaPliku, const std::str
                 if (i == 33) {
                     zapisDoPliku << sprawdzCzas("s") << std::endl;
                 }
-                zapisDoPliku << szyfrujWejscie("1nied3ozla2man4ia5") << szyfrujWejscie(zmie) << std::endl;
+                zapisDoPliku << encrypt_decrypt_input("1nied3ozla2man4ia5") << encrypt_decrypt_input(zmie) << std::endl;
             }
         }
         zapisDoPliku.close();
