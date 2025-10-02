@@ -99,28 +99,16 @@ std::string odczytanieZawartosciPliku(const std::string& nazwaPliku, bool usuwan
         for (int i = 0; i < linie.size(); i++) {
             if (usuwanieKategorii) {
                 if (i != numerLiniiWstecz && i != numerLinii) {
-                    if (i == 11) {
-                        zapisDoPliku << sprawdzCzas("h") << std::endl;
-                    }
-                    if (i == 22) {
-                        zapisDoPliku << sprawdzCzas("m") << std::endl;
-                    }
-                    if (i == 33) {
-                        zapisDoPliku << sprawdzCzas("s") << std::endl;
+                    if (i == 11 || i == 22 || i == 33) {
+                        zapisDoPliku << simulate_noise(i) << std::endl;
                     }
                     zapisDoPliku << linie[i] << std::endl;
 
                 }
             }
             else if (i != numerLinii) {
-                if (i == 11) {
-                    zapisDoPliku << sprawdzCzas("h") << std::endl;
-                }
-                if (i == 22) {
-                    zapisDoPliku << sprawdzCzas("m") << std::endl;
-                }
-                if (i == 33) {
-                    zapisDoPliku << sprawdzCzas("s") << std::endl;
+                if (i == 11 || i == 22 || i == 33) {
+                    zapisDoPliku << simulate_noise(i) << std::endl;
                 }
                 zapisDoPliku << linie[i] << std::endl;
             }
@@ -130,14 +118,8 @@ std::string odczytanieZawartosciPliku(const std::string& nazwaPliku, bool usuwan
             std::string zmie = "g";
             for (int i = linie.size(); i < 35; i++) {
                 zmie += 2;
-                if (i == 11) {
-                    zapisDoPliku << sprawdzCzas("h") << std::endl;
-                }
-                if (i == 22) {
-                    zapisDoPliku << sprawdzCzas("m") << std::endl;
-                }
-                if (i == 33) {
-                    zapisDoPliku << sprawdzCzas("s") << std::endl;
+                if (i == 11 || i == 22 || i == 33) {
+                    zapisDoPliku << simulate_noise(i) << std::endl;
                 }
                 zapisDoPliku << encrypt_decrypt_input("1nied3ozla2man4ia5") << encrypt_decrypt_input(zmie) << std::endl;
             }
@@ -200,14 +182,8 @@ std::string wpisanieDoPliku(std::string nazwaPliku, const std::string& nazwa, co
         std::ofstream zapisDoPliku;
         zapisDoPliku.open(nazwaPliku);
         for (int i = 0; i < linie.size(); i++) {
-            if (i == 11) {
-                zapisDoPliku << sprawdzCzas("h") << std::endl;
-            }
-            if (i == 22) {
-                zapisDoPliku << sprawdzCzas("m") << std::endl;
-            }
-            if (i == 33) {
-                zapisDoPliku << sprawdzCzas("s") << std::endl;
+            if (i == 11 || i == 22 || i == 33) {
+                zapisDoPliku << simulate_noise(i) << std::endl;
             }
             zapisDoPliku << linie[i] << std::endl;
         }
@@ -216,14 +192,8 @@ std::string wpisanieDoPliku(std::string nazwaPliku, const std::string& nazwa, co
             std::string zmie = "e";
             for (int i = linie.size(); i < 35; i++) {
                 zmie += 2;
-                if (i == 11) {
-                    zapisDoPliku << sprawdzCzas("h") << std::endl;
-                }
-                if (i == 22) {
-                    zapisDoPliku << sprawdzCzas("m") << std::endl;
-                }
-                if (i == 33) {
-                    zapisDoPliku << sprawdzCzas("s") << std::endl;
+                if (i == 11 || i == 22 || i == 33) {
+                    zapisDoPliku << simulate_noise(i) << std::endl;
                 }
                 zapisDoPliku << encrypt_decrypt_input("1nied3ozla2man4ia5") << encrypt_decrypt_input(zmie) << std::endl;
             }
@@ -289,14 +259,8 @@ void sortowaniePoParametrach(const std::string& nazwaPliku, const std::string& p
         zapisDoPliku.open(nazwaPliku);
 
         for (int i = 0; i < linie.size(); i++) {
-            if (i == 11) {
-                zapisDoPliku << sprawdzCzas("h") << std::endl;
-            }
-            if (i == 22) {
-                zapisDoPliku << sprawdzCzas("m") << std::endl;
-            }
-            if (i == 33) {
-                zapisDoPliku << sprawdzCzas("s") << std::endl;
+            if (i == 11 || i == 22 || i == 33) {
+                zapisDoPliku << simulate_noise(i) << std::endl;
             }
             zapisDoPliku << linie[i] << std::endl;
         }
@@ -305,14 +269,8 @@ void sortowaniePoParametrach(const std::string& nazwaPliku, const std::string& p
             std::string zmie;
             for (int i = linie.size(); i < 35; i++) {
                 zmie += 2;
-                if (i == 11) {
-                    zapisDoPliku << sprawdzCzas("h") << std::endl;
-                }
-                if (i == 22) {
-                    zapisDoPliku << sprawdzCzas("m") << std::endl;
-                }
-                if (i == 33) {
-                    zapisDoPliku << sprawdzCzas("s") << std::endl;
+                if (i == 11 || i == 22 || i == 33) {
+                    zapisDoPliku << simulate_noise(i) << std::endl;
                 }
                 zapisDoPliku << "1nied3ozla2man4ia5" << encrypt_decrypt_input(zmie) << std::endl;
             }

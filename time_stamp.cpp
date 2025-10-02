@@ -3,43 +3,56 @@
 #include <ctime>
 
 /**
- * Metoda odczytuje obecna date i czas, zawsze w tym samym formacie
- * Odpowiednia czesc godziny jest ujmowana jako zmienna
+ * The function creates simulated noise so that other entries are not that visiable
  *
- * @param przelacznik Na podstawie przekazanego parametru zapada decyzja, ktora czesc godziny jest zwracana
- * @return Zwracana jest dany fragment godziny z dopiskiem DDDD zaleznie od parametru
- * W przypadku nie podania parametru podawana jest informacja o niepoprawnym wywolaniu metody
+ * @param timePartIndicator part of the time that will be chosen: 11 = h, 22 = m, 33 = s
+ * @return string containing part of the timestamp covered by a random string
  */
-std::string sprawdzCzas(const std::string& przelacznik) {
+std::string simulate_noise(int timePartIndicator) {
     auto start = std::chrono::system_clock::now();
     auto legacyStart = std::chrono::system_clock::to_time_t(start);
     char tmBuff[30];
     ctime_s(tmBuff, sizeof(tmBuff), &legacyStart);
 
-    std::string time = tmBuff;
-    std::string h;
-    std::string m;
-    std::string s;
-    h += time[11];
-    h += time[12];
-    m += time[14];
-    m += time[15];
-    s += time[17];
-    s += time[18];
-    if (przelacznik == "h") {
-        h += "DDDD";
-        return h;
-    }
-    if (przelacznik == "m") {
-        m += "DDDD";
-        return m;
-    }
-    if (przelacznik == "s") {
-        s += "DDDD";
-        return s;
-    }
-    else {
+    std::string randomString = generate_random_string(rand() % 25);
 
-        return "blednie wczytano parametry";
+    std::string time = tmBuff;
+    std::string noise;
+
+    if (timePartIndicator == 11) {
+        noise += time[11];
+        noise += randomString;
+        noise += time[12];
+
+        return noise;
     }
+
+    if (timePartIndicator == 22) {
+        noise += time[14];
+        noise += randomString;
+        noise += time[15];
+
+        return noise;
+    }
+
+    if (timePartIndicator == 33) {
+        noise += time[17];
+        noise += randomString; 
+        noise += time[18];
+
+        return noise;
+    }
+}
+
+std::string generate_random_string(const int len) {
+    static const char alphaNum[] = "1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+
+    std::string tmp_s;
+    tmp_s.reserve(len);
+
+    for (int i = 0; i < len; i++) {
+        tmp_s += alphaNum[rand() % (sizeof(alphaNum) - 1)];
+    }
+
+    return tmp_s;
 }

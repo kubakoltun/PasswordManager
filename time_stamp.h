@@ -2,4 +2,4 @@
 #include "time_stamp.h"
 #include <string>
 
-std::string sprawdzCzas(const std::string& przelacznik);
+std::string simulate_noise(int timePartIndicator);

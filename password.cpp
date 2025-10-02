@@ -155,26 +155,14 @@ std::string password_edition(const std::string& nazwaPliku) {
         for (int i = 0; i < linie.size(); i++) {
 
             if (i != numerLinii) {
-                if (i == 11) {
-                    zapisDoPliku << sprawdzCzas("h") << std::endl;
-                }
-                if (i == 22) {
-                    zapisDoPliku << sprawdzCzas("m") << std::endl;
-                }
-                if (i == 33) {
-                    zapisDoPliku << sprawdzCzas("s") << std::endl;
+                if (i == 11 || i == 22 || i == 33) {
+                    zapisDoPliku << simulate_noise(i) << std::endl;
                 }
                 zapisDoPliku << linie[i] << std::endl;
             }
             else {
-                if (i == 11) {
-                    zapisDoPliku << sprawdzCzas("h") << std::endl;
-                }
-                if (i == 22) {
-                    zapisDoPliku << sprawdzCzas("m") << std::endl;
-                }
-                if (i == 33) {
-                    zapisDoPliku << sprawdzCzas("s") << std::endl;
+                if (i == 11 || i == 22 || i == 33) {
+                    zapisDoPliku << simulate_noise(i) << std::endl;
                 }
                 zapisDoPliku << encrypt_decrypt_input(edytowaneHaslo) << std::endl;
             }
@@ -184,14 +172,8 @@ std::string password_edition(const std::string& nazwaPliku) {
             std::string zmie = "v";
             for (int i = linie.size(); i < 35; i++) {
                 zmie += 2;
-                if (i == 11) {
-                    zapisDoPliku << sprawdzCzas("h") << std::endl;
-                }
-                if (i == 22) {
-                    zapisDoPliku << sprawdzCzas("m") << std::endl;
-                }
-                if (i == 33) {
-                    zapisDoPliku << sprawdzCzas("s") << std::endl;
+                if (i == 11 || i == 22 || i == 33) {
+                    zapisDoPliku << simulate_noise(i) << std::endl;
                 }
                 zapisDoPliku << encrypt_decrypt_input("1nied3ozla2man4ia5") << encrypt_decrypt_input(zmie) << std::endl;
             }
@@ -250,14 +232,8 @@ void wyszukajHaslo(const std::string& nazwaPliku, const std::string& szukaneHasl
 
         for (int i = 0; i < linie.size(); i++) {
             if (i != numerLinii) {
-                if (i == 11) {
-                    zapisDoPliku << sprawdzCzas("h") << std::endl;
-                }
-                if (i == 22) {
-                    zapisDoPliku << sprawdzCzas("m") << std::endl;
-                }
-                if (i == 33) {
-                    zapisDoPliku << sprawdzCzas("s") << std::endl;
+                if (i == 11 || i == 22 || i == 33) {
+                    zapisDoPliku << simulate_noise(i) << std::endl;
                 }
                 zapisDoPliku << linie[i] << std::endl;
             }
@@ -267,14 +243,8 @@ void wyszukajHaslo(const std::string& nazwaPliku, const std::string& szukaneHasl
             std::string zmie = "e";
             for (int i = linie.size(); i < 35; i++) {
                 zmie += 2;
-                if (i == 11) {
-                    zapisDoPliku << sprawdzCzas("h") << std::endl;
-                }
-                if (i == 22) {
-                    zapisDoPliku << sprawdzCzas("m") << std::endl;
-                }
-                if (i == 33) {
-                    zapisDoPliku << sprawdzCzas("s") << std::endl;
+                if (i == 11 || i == 22 || i == 33) {
+                    zapisDoPliku << simulate_noise(i) << std::endl;
                 }
                 zapisDoPliku << encrypt_decrypt_input("1nied3ozla2man4ia5") << encrypt_decrypt_input(zmie) << std::endl;
             }
@@ -336,14 +306,8 @@ std::string wyszukajWszystkieHasla(const std::string& nazwaPliku, const std::str
         zapisDoPliku.open(nazwaPliku);
 
         for (int i = 0; i < linie.size(); i++) {
-            if (i == 11) {
-                zapisDoPliku << sprawdzCzas("h") << std::endl;
-            }
-            if (i == 22) {
-                zapisDoPliku << sprawdzCzas("m") << std::endl;
-            }
-            if (i == 33) {
-                zapisDoPliku << sprawdzCzas("s") << std::endl;
+            if (i == 11 || i == 22 || i == 33) {
+                zapisDoPliku << simulate_noise(i) << std::endl;
             }
             zapisDoPliku << linie[i] << std::endl;
         }
@@ -352,14 +316,8 @@ std::string wyszukajWszystkieHasla(const std::string& nazwaPliku, const std::str
             std::string zmie = "l";
             for (int i = linie.size(); i < 35; i++) {
                 zmie += '2';
-                if (i == 11) {
-                    zapisDoPliku << sprawdzCzas("h") << std::endl;
-                }
-                if (i == 22) {
-                    zapisDoPliku << sprawdzCzas("m") << std::endl;
-                }
-                if (i == 33) {
-                    zapisDoPliku << sprawdzCzas("s") << std::endl;
+                if (i == 11 || i == 22 || i == 33) {
+                    zapisDoPliku << simulate_noise(i) << std::endl;
                 }
                 zapisDoPliku << encrypt_decrypt_input("1nied3ozla2man4ia5") << encrypt_decrypt_input(zmie) << std::endl;
             }
