@@ -357,7 +357,7 @@ int main() {
                     std::cout << ">";
                     std::cin >> haslo;
                     std::cout << "Haslo jest " << password_strength_verifier(haslo) << "!" << std::endl;
-                    std::cout << wyszukajWszystkieHasla(mainFile, haslo) << std::endl;
+                    std::cout << search_all_passwords(mainFile, haslo) << std::endl;
                 }
                 else {
                     std::cout << "Nie rozpoznano komendy \"" << czy_wygenerowac_haslo << "\", aby wygenerowac haslo wpisz \"tak\", aby pominac wpisz \"-\"." << std::endl;

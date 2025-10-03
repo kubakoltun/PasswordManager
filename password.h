@@ -9,4 +9,4 @@ std::string generate_password(const int ilosc_znakow, const bool wielkie, const 
 std::string password_strength_verifier(std::string haslo);
 std::string password_edition(const std::string& nazwaPliku);
 void wyszukajHaslo(const std::string& nazwaPliku, const std::string& szukaneHaslo, const std::string& parametr);
-std::string wyszukajWszystkieHasla(const std::string& nazwaPliku, const std::string& szukaneHaslo);
+std::string search_all_passwords(const std::string& fileName, const std::string& searchedPassword);

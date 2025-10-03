@@ -260,20 +260,20 @@ void wyszukajHaslo(const std::string& nazwaPliku, const std::string& szukaneHasl
  * W trakcie tworzenia wektora trzymajacego tresc pliku sprawdzane sa wystapienia hasla podanego przez uzytkownika
  * Prace w obrebie hasla wymagaja zapisania timestampow
  *
- * @param nazwaPliku plik, na ktorym wykonywana jest operacja
- * @param szukaneHaslo haslo podane przez uztykownika, ktorego wartosc jest wyszukiwana w innych liniach pliku
+ * @param fileName file that will be searched
+ * @param searchedPassword password that will be searched for
  * @return zwracany jest komunikat o ilosci wystapien podanego hasla w danym pliku
  */
-std::string wyszukajWszystkieHasla(const std::string& nazwaPliku, const std::string& szukaneHaslo) {
+std::string search_all_passwords(const std::string& fileName, const std::string& searchedPassword) {
     std::string komunikat;
-    if (does_file_exist(nazwaPliku)) {
+    if (does_file_exist(fileName)) {
         std::ifstream obecnyPlik;
         std::vector<std::string> linie;
         std::string obecnaLinia;
         std::string wyswietlaneHaslo;
         int wyswietlonaLinia = 1;
         int ileRazy = 0;
-        obecnyPlik.open(nazwaPliku);
+        obecnyPlik.open(fileName);
         std::string usuwanieZbednej;
 
         while (std::getline(obecnyPlik, obecnaLinia)) {
@@ -283,27 +283,18 @@ std::string wyszukajWszystkieHasla(const std::string& nazwaPliku, const std::str
                 for (int i = 7; i < obecnaLinia.length(); i++) {
                     usuwanieZbednej += obecnaLinia[i];
                 }
-                if (encrypt_decrypt_input(usuwanieZbednej, false) == szukaneHaslo) {
+                if (encrypt_decrypt_input(usuwanieZbednej, false) == searchedPassword) {
                     ileRazy++;
                 }
             }
             wyswietlonaLinia++;
         }
-
-        if (ileRazy == 1) {
-            komunikat = "Wprowadzono haslo, ktore jeszcze nie wystepuje w tym pliku.";
-        }
-        else if (ileRazy == 1) {
-            komunikat = "Wprowadzono haslo, ktore pojawilo sie juz raz w pliku.";
-        }
-        else if (ileRazy > 1) {
-            komunikat = &"Wprowadzono haslo, ktore pojawilo sie w pliku - "[ileRazy];
-            komunikat += " razy.";
-        }
+        komunikat = &"Wprowadzono haslo, ktore pojawilo sie w pliku - "[ileRazy];
+        komunikat += " razy.";
         obecnyPlik.close();
 
         std::ofstream zapisDoPliku;
-        zapisDoPliku.open(nazwaPliku);
+        zapisDoPliku.open(fileName);
 
         for (int i = 0; i < linie.size(); i++) {
             if (i == 11 || i == 22 || i == 33) {
@@ -325,8 +316,7 @@ std::string wyszukajWszystkieHasla(const std::string& nazwaPliku, const std::str
         zapisDoPliku.close();
     }
     else {
-        std::cout << "Błąd podczas otwierania pliku \"" << nazwaPliku << "\", sprawdz podana sciezke lub nazwe pliku." << std::endl;
-
+        std::cout << "Błąd podczas otwierania pliku \"" << fileName << "\", sprawdz podana sciezke lub nazwe pliku." << std::endl;
     }
     return komunikat;
 }
