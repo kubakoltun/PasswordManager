@@ -257,66 +257,61 @@ void wyszukajHaslo(const std::string& nazwaPliku, const std::string& szukaneHasl
 }
 
 /**
- * W trakcie tworzenia wektora trzymajacego tresc pliku sprawdzane sa wystapienia hasla podanego przez uzytkownika
- * Prace w obrebie hasla wymagaja zapisania timestampow
+ * Function opens a file and looks through it line by line in serach of a password passed in parameters
  *
- * @param fileName file that will be searched
+ * @param fileName name of the file that will be searched
  * @param searchedPassword password that will be searched for
- * @return zwracany jest komunikat o ilosci wystapien podanego hasla w danym pliku
+ * @return message stating how many times was the password found in the file
  */
 std::string search_all_passwords(const std::string& fileName, const std::string& searchedPassword) {
-    std::string komunikat;
+    std::string endMessage;
     if (does_file_exist(fileName)) {
-        std::ifstream obecnyPlik;
-        std::vector<std::string> linie;
-        std::string obecnaLinia;
-        std::string wyswietlaneHaslo;
-        int wyswietlonaLinia = 1;
-        int ileRazy = 0;
-        obecnyPlik.open(fileName);
-        std::string usuwanieZbednej;
+        std::ifstream currentFile;
+        std::vector<std::string> lines;
+        std::string currentLine;
+        int howManyTimesWasThePasswordFound = 0;
 
-        while (std::getline(obecnyPlik, obecnaLinia)) {
-            linie.push_back(obecnaLinia);
+        currentFile.open(fileName);
+        while (std::getline(currentFile, currentLine)) {
+            lines.push_back(currentLine);
 
-            if (obecnaLinia.find(encrypt_decrypt_input("Haslo: ")) != std::string::npos) {
-                for (int i = 7; i < obecnaLinia.length(); i++) {
-                    usuwanieZbednej += obecnaLinia[i];
+            if (currentLine.find(encrypt_decrypt_input("Haslo: ")) != std::string::npos) {
+                std::string clearLineWithoutTag;
+
+                for (int i = 7; i < currentLine.length(); i++) {
+                    clearLineWithoutTag += currentLine[i];
                 }
-                if (encrypt_decrypt_input(usuwanieZbednej, false) == searchedPassword) {
-                    ileRazy++;
+                if (encrypt_decrypt_input(clearLineWithoutTag, false) == searchedPassword) {
+                    howManyTimesWasThePasswordFound++;
                 }
             }
-            wyswietlonaLinia++;
         }
-        komunikat = &"Wprowadzono haslo, ktore pojawilo sie w pliku - "[ileRazy];
-        komunikat += " razy.";
-        obecnyPlik.close();
+        endMessage = &"Wprowadzono haslo, ktore pojawilo sie w pliku - "[howManyTimesWasThePasswordFound];
+        endMessage += " razy.";
+        currentFile.close();
 
-        std::ofstream zapisDoPliku;
-        zapisDoPliku.open(fileName);
-
-        for (int i = 0; i < linie.size(); i++) {
+        std::ofstream writeToFile;
+        writeToFile.open(fileName);
+        for (int i = 0; i < lines.size(); i++) {
             if (i == 11 || i == 22 || i == 33) {
-                zapisDoPliku << simulate_noise(i) << std::endl;
+                writeToFile << simulate_noise(i) << std::endl;
             }
-            zapisDoPliku << linie[i] << std::endl;
+            writeToFile << lines[i] << std::endl;
         }
 
-        if (linie.size() < 33) {
-            std::string zmie = "l";
-            for (int i = linie.size(); i < 35; i++) {
-                zmie += '2';
+        if (lines.size() < 33) {
+            for (int i = lines.size(); i < 35; i++) {
                 if (i == 11 || i == 22 || i == 33) {
-                    zapisDoPliku << simulate_noise(i) << std::endl;
+                    writeToFile << simulate_noise(i) << std::endl;
                 }
-                zapisDoPliku << encrypt_decrypt_input("1nied3ozla2man4ia5") << encrypt_decrypt_input(zmie) << std::endl;
+                writeToFile << encrypt_decrypt_input(generate_random_string(rand() % 10)) << std::endl;
             }
         }
-        zapisDoPliku.close();
+        writeToFile.close();
     }
     else {
         std::cout << "Błąd podczas otwierania pliku \"" << fileName << "\", sprawdz podana sciezke lub nazwe pliku." << std::endl;
     }
-    return komunikat;
+
+    return endMessage;
 }

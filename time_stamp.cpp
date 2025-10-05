@@ -44,6 +44,12 @@ std::string simulate_noise(int timePartIndicator) {
     }
 }
 
+/**
+ * Generating random string with length regulated by a parameter
+ * 
+ * @param len number of characters that the string should have 
+ * @return random string
+ */
 std::string generate_random_string(const int len) {
     static const char alphaNum[] = "1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
 

@@ -3,3 +3,4 @@
 #include <string>
 
 std::string simulate_noise(int timePartIndicator);
+std::string generate_random_string(const int len);
