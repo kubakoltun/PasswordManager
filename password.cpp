@@ -193,66 +193,64 @@ std::string password_edition(const std::string& nazwaPliku) {
  * Uzytkownikowi wyswietlana jest lista parametru oraz przynaleznych do niego hasel
  * Dane zostaja wyswietlane wiec jest pozostawiany timestamp
  *
- * @param nazwaPliku nazwa pliku, na ktorym bedzie wykonywana operacja
- * @param szukaneHaslo wartosc parametru, ze wzgledu na ktora bedzie przeszukiwany plik
- * @param parametr klucz wartosci parametru wprowadzony w zaleznosci od wybranej przez uzytkownika opcji szukania
+ * @param fileName name of the file that will be searched
+ * @param searchedPassword phrase that will be searched for
+ * @param startOfLineTag a tag that starts the line and tells its kind, some exemplary tags: "Strona WWW:", "Hasło:", etc.
  */
-void wyszukajHaslo(const std::string& nazwaPliku, const std::string& szukaneHaslo, const std::string& parametr) {
-    if (does_file_exist(nazwaPliku)) {
-        std::ifstream obecnyPlik;
-        std::vector<std::string> linie;
-        std::string obecnaLinia;
-        std::string wyswietlaneHaslo;
-        std::string poszukiwany = parametr + szukaneHaslo;
-        int numerLinii = 0;
-        int wyswietlonaLinia = 1;
-        obecnyPlik.open(nazwaPliku);
-        std::string usuwanieZbednej;
+// todo tomoże być ogólnie search i wtedy moglbym uzyc tej funckjo do wyszukiwaina wszytkich hasel itp.
+void search_password(const std::string& fileName, const std::string& searchedPassword, const std::string& startOfLineTag) {
+    if (does_file_exist(fileName)) {
+        std::ifstream currentFile;
+        std::vector<std::string> lines;
+        std::string currentLine;
+        std::string wholeSearchedPhraseTagAndPassword = startOfLineTag + searchedPassword;
+        int lineCounter = 0;
+        int lineIndicatorForFile = 1;
+        currentFile.open(fileName);
 
-        while (std::getline(obecnyPlik, obecnaLinia)) {
-            linie.push_back(obecnaLinia);
+        while (std::getline(currentFile, currentLine)) {
+            std::string clearLineWithoutTag;
+            lines.push_back(currentLine);
 
-            if (obecnaLinia.find(encrypt_decrypt_input(poszukiwany)) != std::string::npos) {
-                std::cout << wyswietlonaLinia << ". " << encrypt_decrypt_input(obecnaLinia, false) << std::endl;
-                usuwanieZbednej = "";
+            if (currentLine.find(encrypt_decrypt_input(wholeSearchedPhraseTagAndPassword)) != std::string::npos) {
+                std::cout << lineIndicatorForFile << ". " << encrypt_decrypt_input(currentLine, false) << std::endl;
+                clearLineWithoutTag = "";
             }
-            if (obecnaLinia.find(encrypt_decrypt_input("Haslo: ")) != std::string::npos && usuwanieZbednej.empty()) {
-                for (int i = 7; i < obecnaLinia.length(); i++) {
-                    usuwanieZbednej += obecnaLinia[i];
+            if (currentLine.find(encrypt_decrypt_input("Haslo: ")) != std::string::npos && clearLineWithoutTag.empty()) {
+                for (int i = 7; i < currentLine.length(); i++) {
+                    clearLineWithoutTag += currentLine[i];
                 }
-                std::cout << wyswietlonaLinia << ". " << encrypt_decrypt_input(usuwanieZbednej, false) << std::endl;
+                std::cout << lineIndicatorForFile << ". " << encrypt_decrypt_input(clearLineWithoutTag, false) << std::endl;
             }
-            wyswietlonaLinia++;
+            lineIndicatorForFile++;
         }
-        obecnyPlik.close();
+        currentFile.close();
 
-        std::ofstream zapisDoPliku;
-        zapisDoPliku.open(nazwaPliku);
-        numerLinii--;
+        std::ofstream writeToFile;
+        writeToFile.open(fileName);
+        lineCounter--;
 
-        for (int i = 0; i < linie.size(); i++) {
-            if (i != numerLinii) {
+        for (int i = 0; i < lines.size(); i++) {
+            if (i != lineCounter) {
                 if (i == 11 || i == 22 || i == 33) {
-                    zapisDoPliku << simulate_noise(i) << std::endl;
+                    writeToFile << simulate_noise(i) << std::endl;
                 }
-                zapisDoPliku << linie[i] << std::endl;
+                writeToFile << lines[i] << std::endl;
             }
         }
 
-        if (linie.size() < 33) {
-            std::string zmie = "e";
-            for (int i = linie.size(); i < 35; i++) {
-                zmie += 2;
+        if (lines.size() < 33) {
+            for (int i = lines.size(); i < 35; i++) {
                 if (i == 11 || i == 22 || i == 33) {
-                    zapisDoPliku << simulate_noise(i) << std::endl;
+                    writeToFile << simulate_noise(i) << std::endl;
                 }
-                zapisDoPliku << encrypt_decrypt_input("1nied3ozla2man4ia5") << encrypt_decrypt_input(zmie) << std::endl;
+                writeToFile << encrypt_decrypt_input(generate_random_string(rand() % 10)) << std::endl;
             }
         }
-        zapisDoPliku.close();
+        writeToFile.close();
     }
     else {
-        std::cout << "Błąd podczas otwierania pliku \"" << nazwaPliku << "\", sprawdz podana sciezke lub nazwe pliku." << std::endl;
+        std::cout << "Błąd podczas otwierania pliku \"" << fileName << "\", sprawdz podana sciezke lub nazwe pliku." << std::endl;
     }
 }
 

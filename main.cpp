@@ -49,7 +49,7 @@ int main() {
                     std::getline(std::cin >> std::ws, wh_nazwa);
 
                     std::cout << "Wyniki wyszukiwania:" << std::endl;
-                    wyszukajHaslo(mainFile, wh_nazwa, "Nazwa: ");
+                    search_password(mainFile, wh_nazwa, "Nazwa: ");
 
                 }
                 else if (wyszukaj_hasla == "2" || wyszukaj_hasla == "2.") {
@@ -59,7 +59,7 @@ int main() {
                     std::getline(std::cin >> std::ws, wh_kategoria);
 
                     std::cout << "Wyniki wyszukiwania:" << std::endl;
-                    wyszukajHaslo(mainFile, wh_kategoria, "Kategoria: ");
+                    search_password(mainFile, wh_kategoria, "Kategoria: ");
 
                 }
                 else if (wyszukaj_hasla == "3" || wyszukaj_hasla == "3.") {
@@ -70,7 +70,7 @@ int main() {
                     std::getline(std::cin >> std::ws, wh_strona);
 
                     std::cout << "Wyniki wyszukiwania:" << std::endl;
-                    wyszukajHaslo(mainFile, wh_strona, "Strona WWW: ");
+                    search_password(mainFile, wh_strona, "Strona WWW: ");
 
                 }
                 else if (wyszukaj_hasla == "4" || wyszukaj_hasla == "4.") {
@@ -80,7 +80,7 @@ int main() {
                     std::getline(std::cin >> std::ws, wh_login);
 
                     std::cout << "Wyniki wyszukiwania:" << std::endl;
-                    wyszukajHaslo(mainFile, wh_login, "Login: ");
+                    search_password(mainFile, wh_login, "Login: ");
 
                 } else {
                     std::cout << "Nie znaleziono Twojej komendy: \"" << wyszukaj_hasla << "\". \nSprobuj ponownie wprowadzic cyfre reprezentujaca dana komende.\n" << std::endl;
