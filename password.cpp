@@ -51,7 +51,7 @@ std::string generate_password(int length, bool use_uppercase, bool use_special, 
         password += pool[dist(gen)];
     }
 
-    // Shuffle so guarantees aren’t at the front
+    // Shuffle so guarantees arent at the front
     std::shuffle(password.begin(), password.end(), gen);
 
     return password;
@@ -103,101 +103,95 @@ std::string password_strength_verifier(std::string password) {
 }
 
 /**
- * Zawartosc pliku jest wprowadzana do wektora
- * Jednoczesnie uzytkownikowi wyswietlana jest lista hasel
- * Uzytkownik staje przed wyborem edycji danego hasla, ktore bedzie zpaisane poprzez nadpisywanie istniejacej linii, linia nowa utworzona
- * Ze wzgledu na operacje na danych zapisywane sa timestapmy
+ * Password chosen by the user can be edited. After edition the password is saved back to the file
  *
- * @param nazwaPliku nazwa pliku, na ktorym bedzie wykonywana operacja
- * @return zwracany jest komunikat o pomyslnosci dzialania
+ * @param fileName name of the file that will be searched
+ * @return message stating summary of the operation
  */
-std::string password_edition(const std::string& nazwaPliku) {
+std::string password_edition(const std::string& fileName) {
 
-    if (does_file_exist(nazwaPliku)) {
-        std::ifstream obecnyPlik;
-        std::vector<std::string> linie;
-        std::string obecnaLinia;
-        std::string edytowaneHaslo;
-        int numerLinii = 0;
-        obecnyPlik.open(nazwaPliku);
-        int wyswietlonaLinia = 1;
+    if (does_file_exist(fileName)) {
+        std::ifstream currentFile;
+        std::vector<std::string> lines;
+        std::string currentLine;
+        std::string editedPassword;
+        int lineNumber = 0;
+        currentFile.open(fileName);
+        int lineIndicatorForFile = 1;
 
-        while (getline(obecnyPlik, obecnaLinia)) {
-            linie.push_back(obecnaLinia);
+        while (getline(currentFile, currentLine)) {
+            lines.push_back(currentLine);
 
-            if (obecnaLinia.find(encrypt_decrypt_input("Haslo: ")) != std::string::npos) {
-                std::string usuwanieZbednej;
-                for (int i = 7; i < obecnaLinia.length(); i++) {
-                    usuwanieZbednej += obecnaLinia[i];
+            if (currentLine.find(encrypt_decrypt_input("Haslo: ")) != std::string::npos) {
+                std::string clearLineWithoutTag;
+                for (int i = 7; i < currentLine.length(); i++) {
+                    clearLineWithoutTag += currentLine[i];
                 }
-                std::cout << wyswietlonaLinia << ". " << encrypt_decrypt_input(usuwanieZbednej, false) << std::endl;
+                std::cout << lineIndicatorForFile << ". " << encrypt_decrypt_input(clearLineWithoutTag, false) << std::endl;
             }
-            wyswietlonaLinia++;
+            lineIndicatorForFile++;
         }
 
         std::cout << "Wpisz numer hasla, ktore chcesz edytowac:" << std::endl;
         std::cout << ">";
-        std::cin >> numerLinii;
-        std::cout << "Edytujesz haslo numer: " << numerLinii << ", wprowadz zmiany:" << std::endl;
+        std::cin >> lineNumber;
+        std::cout << "Edytujesz haslo numer: " << lineNumber << ", wprowadz zmiany:" << std::endl;
         std::cout << ">";
-        std::cin >> edytowaneHaslo;
+        std::cin >> editedPassword;
 
-        obecnyPlik.close();
+        currentFile.close();
 
-        if (numerLinii > linie.size()) {
-            std::cout << "Linia: " << numerLinii << ", nie znajduje sie w pliku." << std::endl;
+        if (lineNumber > lines.size()) {
+            std::cout << "Linia: " << lineNumber << ", nie znajduje sie w pliku." << std::endl;
         }
 
-        std::ofstream zapisDoPliku;
-        zapisDoPliku.open(nazwaPliku);
-        numerLinii--;
+        std::ofstream writeToFile;
+        writeToFile.open(fileName);
+        lineNumber--;
 
-        for (int i = 0; i < linie.size(); i++) {
+        for (int i = 0; i < lines.size(); i++) {
 
-            if (i != numerLinii) {
+            if (i != lineNumber) {
                 if (i == 11 || i == 22 || i == 33) {
-                    zapisDoPliku << simulate_noise(i) << std::endl;
+                    writeToFile << simulate_noise(i) << std::endl;
                 }
-                zapisDoPliku << linie[i] << std::endl;
+                writeToFile << lines[i] << std::endl;
             }
             else {
                 if (i == 11 || i == 22 || i == 33) {
-                    zapisDoPliku << simulate_noise(i) << std::endl;
+                    writeToFile << simulate_noise(i) << std::endl;
                 }
-                zapisDoPliku << encrypt_decrypt_input(edytowaneHaslo) << std::endl;
+                writeToFile << encrypt_decrypt_input(editedPassword) << std::endl;
             }
         }
 
-        if (linie.size() < 33) {
-            std::string zmie = "v";
-            for (int i = linie.size(); i < 35; i++) {
-                zmie += 2;
+        if (lines.size() < 33) {
+            for (int i = lines.size(); i < 35; i++) {
                 if (i == 11 || i == 22 || i == 33) {
-                    zapisDoPliku << simulate_noise(i) << std::endl;
+                    writeToFile << simulate_noise(i) << std::endl;
                 }
-                zapisDoPliku << encrypt_decrypt_input("1nied3ozla2man4ia5") << encrypt_decrypt_input(zmie) << std::endl;
+                writeToFile << encrypt_decrypt_input(generate_random_string(rand() % 10)) << std::endl;
             }
         }
-        zapisDoPliku.close();
+        writeToFile.close();
 
         return "Dokonano wprowadzonych zmian.";
     }
     else {
-        std::cout << "Błąd podczas otwierania pliku \"" << nazwaPliku << "\", sprawdz podana sciezke lub nazwe pliku." << std::endl;
+        std::cout << "Błąd podczas otwierania pliku \"" << fileName << "\", sprawdz podana sciezke lub nazwe pliku." << std::endl;
     }
 }
 
 
 /**
- * W trakcie wprowadzania lini z pliku do wektora kazda linia zostaje przeszukana pod katem podanych wartosci szukania
- * Uzytkownikowi wyswietlana jest lista parametru oraz przynaleznych do niego hasel
- * Dane zostaja wyswietlane wiec jest pozostawiany timestamp
+ * Function opens a file and looks through it line by line in serach of a password with a tag passed in parameters
  *
  * @param fileName name of the file that will be searched
  * @param searchedPassword phrase that will be searched for
  * @param startOfLineTag a tag that starts the line and tells its kind, some exemplary tags: "Strona WWW:", "Hasło:", etc.
  */
 // todo tomoże być ogólnie search i wtedy moglbym uzyc tej funckjo do wyszukiwaina wszytkich hasel itp.
+// todo większość tej logiki powinna być wydzielona
 void search_password(const std::string& fileName, const std::string& searchedPassword, const std::string& startOfLineTag) {
     if (does_file_exist(fileName)) {
         std::ifstream currentFile;
@@ -261,6 +255,7 @@ void search_password(const std::string& fileName, const std::string& searchedPas
  * @param searchedPassword password that will be searched for
  * @return message stating how many times was the password found in the file
  */
+// todo these should be the same function
 std::string search_all_passwords(const std::string& fileName, const std::string& searchedPassword) {
     std::string endMessage;
     if (does_file_exist(fileName)) {
