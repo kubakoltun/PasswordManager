@@ -1,8 +1,6 @@
-#include "cypher.cpp"
+#include "cypher.h"
 #include "files.h"
-#include "files.cpp"
 #include "time_stamp.h"
-#include "time_stamp.cpp"
 #include <string>
 #include <vector>
 #include <random>
@@ -12,11 +10,11 @@
 /**
  * Generates a random password according to user defined rules (arguments).
  *
- * @param length - lenght of the password decaler by the user
- * @param use_uppercase - tells whether the password should contain capital letters
- * @param use_special - tells whether  the password should contain special characters
- * @param name - name of the password
- * @return a generated password is returned
+ * @param length lenght of the password decaler by the user
+ * @param use_uppercase tells whether the password should contain capital letters
+ * @param use_special tells whether  the password should contain special characters
+ * @param name name of the password
+ * @return a random generated password is returned
  */
 std::string generate_password(int length, bool use_uppercase, bool use_special, const std::string& name) {
     if (length <= 0) return "";
@@ -60,14 +58,18 @@ std::string generate_password(int length, bool use_uppercase, bool use_special, 
 /**
  * Veryfing the password strenght based on some general criteria
  *
- * @param password - password that is beign verified
+ * @param password password that is beign verified
  * @return quality of the password in a string 
  */
 std::string password_strength_verifier(std::string password) {
-    int lowercaseCount = 0;
-    int uppercaseCount = 0;
-    int digitCount     = 0;
-    int specialCount   = 0;
+    const int STRONG_LEN = 12;
+    const int GOOD_LEN   = 9;
+    const int MIN_LEN    = 8;
+    const int BAD_LEN    = 4;
+    int lowercaseCount   = 0;
+    int uppercaseCount   = 0;
+    int digitCount       = 0;
+    int specialCount     = 0;
 
     for (unsigned char ch : password) {
         if (std::islower(ch)) {
@@ -86,16 +88,16 @@ std::string password_strength_verifier(std::string password) {
 
     const int password_length = password.size();
 
-    if (password_length >= 12 && lowercaseCount > 3 && uppercaseCount > 3 && digitCount > 2 && specialCount >= 2) {
+    if (password_length >= STRONG_LEN && lowercaseCount > 3 && uppercaseCount > 3 && digitCount > 2 && specialCount >= 2) {
         return "Excelent";
     }
-    if (password_length >= 9 && lowercaseCount > 2 && uppercaseCount > 2 && digitCount >= 2) {
+    if (password_length >= GOOD_LEN && lowercaseCount > 2 && uppercaseCount > 2 && digitCount >= 2) {
         return "Good";
     }
-    if (password_length >= 8 && lowercaseCount >= 1 && uppercaseCount >= 1 && digitCount >= 1) {
+    if (password_length >= MIN_LEN && lowercaseCount >= 1 && uppercaseCount >= 1 && digitCount >= 1) {
         return "Bad";
     }
-    if (password_length > 4 && password_length < 8) {
+    if (password_length > BAD_LEN && password_length < MIN_LEN) {
         return "Terrible";
     }
 
@@ -109,7 +111,6 @@ std::string password_strength_verifier(std::string password) {
  * @return message stating summary of the operation
  */
 std::string password_edition(const std::string& fileName) {
-
     if (does_file_exist(fileName)) {
         std::ifstream currentFile;
         std::vector<std::string> lines;
@@ -145,43 +146,14 @@ std::string password_edition(const std::string& fileName) {
             std::cout << "Linia: " << lineNumber << ", nie znajduje sie w pliku." << std::endl;
         }
 
-        std::ofstream writeToFile;
-        writeToFile.open(fileName);
-        lineNumber--;
+        write_to_file(fileName, lines, lineNumber, editedPassword);
 
-        for (int i = 0; i < lines.size(); i++) {
-
-            if (i != lineNumber) {
-                if (i == 11 || i == 22 || i == 33) {
-                    writeToFile << simulate_noise(i) << std::endl;
-                }
-                writeToFile << lines[i] << std::endl;
-            }
-            else {
-                if (i == 11 || i == 22 || i == 33) {
-                    writeToFile << simulate_noise(i) << std::endl;
-                }
-                writeToFile << encrypt_decrypt_input(editedPassword) << std::endl;
-            }
-        }
-
-        if (lines.size() < 33) {
-            for (int i = lines.size(); i < 35; i++) {
-                if (i == 11 || i == 22 || i == 33) {
-                    writeToFile << simulate_noise(i) << std::endl;
-                }
-                writeToFile << encrypt_decrypt_input(generate_random_string(rand() % 10)) << std::endl;
-            }
-        }
-        writeToFile.close();
-
-        return "Dokonano wprowadzonych zmian.";
+        return "Zapisano wprowadzone zmiany.";
     }
     else {
         std::cout << "Błąd podczas otwierania pliku \"" << fileName << "\", sprawdz podana sciezke lub nazwe pliku." << std::endl;
     }
 }
-
 
 /**
  * Function opens a file and looks through it line by line in serach of a password with a tag passed in parameters
@@ -190,15 +162,12 @@ std::string password_edition(const std::string& fileName) {
  * @param searchedPassword phrase that will be searched for
  * @param startOfLineTag a tag that starts the line and tells its kind, some exemplary tags: "Strona WWW:", "Hasło:", etc.
  */
-// todo tomoże być ogólnie search i wtedy moglbym uzyc tej funckjo do wyszukiwaina wszytkich hasel itp.
-// todo większość tej logiki powinna być wydzielona
 void search_password(const std::string& fileName, const std::string& searchedPassword, const std::string& startOfLineTag) {
     if (does_file_exist(fileName)) {
         std::ifstream currentFile;
         std::vector<std::string> lines;
         std::string currentLine;
         std::string wholeSearchedPhraseTagAndPassword = startOfLineTag + searchedPassword;
-        int lineCounter = 0;
         int lineIndicatorForFile = 1;
         currentFile.open(fileName);
 
@@ -220,28 +189,7 @@ void search_password(const std::string& fileName, const std::string& searchedPas
         }
         currentFile.close();
 
-        std::ofstream writeToFile;
-        writeToFile.open(fileName);
-        lineCounter--;
-
-        for (int i = 0; i < lines.size(); i++) {
-            if (i != lineCounter) {
-                if (i == 11 || i == 22 || i == 33) {
-                    writeToFile << simulate_noise(i) << std::endl;
-                }
-                writeToFile << lines[i] << std::endl;
-            }
-        }
-
-        if (lines.size() < 33) {
-            for (int i = lines.size(); i < 35; i++) {
-                if (i == 11 || i == 22 || i == 33) {
-                    writeToFile << simulate_noise(i) << std::endl;
-                }
-                writeToFile << encrypt_decrypt_input(generate_random_string(rand() % 10)) << std::endl;
-            }
-        }
-        writeToFile.close();
+        write_to_file(fileName, lines);
     }
     else {
         std::cout << "Błąd podczas otwierania pliku \"" << fileName << "\", sprawdz podana sciezke lub nazwe pliku." << std::endl;
@@ -279,32 +227,47 @@ std::string search_all_passwords(const std::string& fileName, const std::string&
                 }
             }
         }
-        endMessage = &"Wprowadzono haslo, ktore pojawilo sie w pliku - "[howManyTimesWasThePasswordFound];
-        endMessage += " razy.";
+        endMessage = "Wprowadzono haslo, ktore pojawilo sie w pliku - " 
+           + std::to_string(howManyTimesWasThePasswordFound)
+           + " razy.";
         currentFile.close();
 
-        std::ofstream writeToFile;
-        writeToFile.open(fileName);
-        for (int i = 0; i < lines.size(); i++) {
-            if (i == 11 || i == 22 || i == 33) {
-                writeToFile << simulate_noise(i) << std::endl;
-            }
-            writeToFile << lines[i] << std::endl;
-        }
-
-        if (lines.size() < 33) {
-            for (int i = lines.size(); i < 35; i++) {
-                if (i == 11 || i == 22 || i == 33) {
-                    writeToFile << simulate_noise(i) << std::endl;
-                }
-                writeToFile << encrypt_decrypt_input(generate_random_string(rand() % 10)) << std::endl;
-            }
-        }
-        writeToFile.close();
+        write_to_file(fileName, lines);
     }
     else {
         std::cout << "Błąd podczas otwierania pliku \"" << fileName << "\", sprawdz podana sciezke lub nazwe pliku." << std::endl;
     }
 
     return endMessage;
+}
+
+void write_to_file(const std::string& fileName, std::vector<std::string> lines, int lineNumber = 0, std::string editedPassword = "") {
+    std::ofstream writeToFile;
+    writeToFile.open(fileName);
+    lineNumber--;
+
+    for (int i = 0; i < lines.size(); i++) {
+        if (i != lineNumber) {
+            if (i == 11 || i == 22 || i == 33) {
+                writeToFile << simulate_noise(i) << std::endl;
+            }
+            writeToFile << lines[i] << std::endl;
+        }
+        else {
+            if (i == 11 || i == 22 || i == 33) {
+                writeToFile << simulate_noise(i) << std::endl;
+            }
+            writeToFile << encrypt_decrypt_input(editedPassword) << std::endl;
+        }
+    }
+
+    if (lines.size() < 33) {
+        for (int i = lines.size(); i < 35; i++) {
+            if (i == 11 || i == 22 || i == 33) {
+                writeToFile << simulate_noise(i) << std::endl;
+            }
+            writeToFile << encrypt_decrypt_input(generate_random_string(rand() % 10)) << std::endl;
+        }
+    }
+    writeToFile.close();
 }

@@ -1,16 +1,16 @@
 # PasswordManager
 
-Menedżer haseł
+Password Manager
 
 Zaimplementowane funkcjonalności dotyczące hasła: \
 sortowanie, \
 grupowanie, \
 generowanie, \
 sprawdzanie siły, \
-autorskie szyfrowanie oraz odszyfrowywanie danych, \
 dodawanie, \
-usuwanie;
+usuwanie, \
+wyszukiwanie, \
+szyfrowanie oraz odszyfrowywanie, \
+generowanie sztucznego szumu w pliku glównym;
 
 Kod działa z poziomu terminala, bez interfejsu graficznego.
-
-Kolejne zmiany będą dotyczyły założenia globalnego hasła oraz uduskonalenie metody tworzącej szum danych. 
