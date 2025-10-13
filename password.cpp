@@ -7,6 +7,8 @@
 #include <algorithm>
 #include <cctype>
 
+const std::string DEFAULT_TAG = "Haslo: ";
+
 /**
  * Generates a random password according to user defined rules (arguments).
  *
@@ -123,9 +125,9 @@ std::string password_edition(const std::string& fileName) {
         while (getline(currentFile, currentLine)) {
             lines.push_back(currentLine);
 
-            if (currentLine.find(encrypt_decrypt_input("Haslo: ")) != std::string::npos) {
+            if (currentLine.find(encrypt_decrypt_input(DEFAULT_TAG)) != std::string::npos) {
                 std::string clearLineWithoutTag;
-                for (int i = 7; i < currentLine.length(); i++) {
+                for (int i = DEFAULT_TAG.size(); i < currentLine.length(); i++) {
                     clearLineWithoutTag += currentLine[i];
                 }
                 std::cout << lineIndicatorForFile << ". " << encrypt_decrypt_input(clearLineWithoutTag, false) << std::endl;
@@ -156,89 +158,62 @@ std::string password_edition(const std::string& fileName) {
 }
 
 /**
- * Function opens a file and looks through it line by line in serach of a password with a tag passed in parameters
+ * Function opens a file and searches for passwords or tagged entries.
  *
- * @param fileName name of the file that will be searched
- * @param searchedPassword phrase that will be searched for
- * @param startOfLineTag a tag that starts the line and tells its kind, some exemplary tags: "Strona WWW:", "Hasło:", etc.
+ * @param fileName name of the file to search
+ * @param searchedPassword the password or phrase to search for
+ * @param startOfLineTag tag marking the start of relevant lines (default "Haslo: ")
+ * @param printResults whether to print matching lines (true) or return summary (false)
+ * @return summary message if printResults is false, otherwise empty string
  */
-void search_password(const std::string& fileName, const std::string& searchedPassword, const std::string& startOfLineTag) {
-    if (does_file_exist(fileName)) {
-        std::ifstream currentFile;
-        std::vector<std::string> lines;
-        std::string currentLine;
-        std::string wholeSearchedPhraseTagAndPassword = startOfLineTag + searchedPassword;
-        int lineIndicatorForFile = 1;
-        currentFile.open(fileName);
-
-        while (std::getline(currentFile, currentLine)) {
-            std::string clearLineWithoutTag;
-            lines.push_back(currentLine);
-
-            if (currentLine.find(encrypt_decrypt_input(wholeSearchedPhraseTagAndPassword)) != std::string::npos) {
-                std::cout << lineIndicatorForFile << ". " << encrypt_decrypt_input(currentLine, false) << std::endl;
-                clearLineWithoutTag = "";
-            }
-            if (currentLine.find(encrypt_decrypt_input("Haslo: ")) != std::string::npos && clearLineWithoutTag.empty()) {
-                for (int i = 7; i < currentLine.length(); i++) {
-                    clearLineWithoutTag += currentLine[i];
-                }
-                std::cout << lineIndicatorForFile << ". " << encrypt_decrypt_input(clearLineWithoutTag, false) << std::endl;
-            }
-            lineIndicatorForFile++;
-        }
-        currentFile.close();
-
-        write_to_file(fileName, lines);
-    }
-    else {
+std::string search_password(const std::string& fileName, const std::string& searchedPassword, const std::string& startOfLineTag = DEFAULT_TAG, bool printResults = true) {
+    if (!does_file_exist(fileName)) {
         std::cout << "Błąd podczas otwierania pliku \"" << fileName << "\", sprawdz podana sciezke lub nazwe pliku." << std::endl;
+        return "";
     }
-}
 
-/**
- * Function opens a file and looks through it line by line in serach of a password passed in parameters
- *
- * @param fileName name of the file that will be searched
- * @param searchedPassword password that will be searched for
- * @return message stating how many times was the password found in the file
- */
-// todo these should be the same function
-std::string search_all_passwords(const std::string& fileName, const std::string& searchedPassword) {
-    std::string endMessage;
-    if (does_file_exist(fileName)) {
-        std::ifstream currentFile;
-        std::vector<std::string> lines;
-        std::string currentLine;
-        int howManyTimesWasThePasswordFound = 0;
+    std::ifstream currentFile(fileName);
+    std::vector<std::string> lines;
+    std::string currentLine;
+    int lineNumber = 1;
+    int matchCount = 0;
 
-        currentFile.open(fileName);
-        while (std::getline(currentFile, currentLine)) {
-            lines.push_back(currentLine);
+    const std::string encryptedTag = encrypt_decrypt_input(startOfLineTag);
+    const std::string encryptedSearch = encrypt_decrypt_input(searchedPassword);
 
-            if (currentLine.find(encrypt_decrypt_input("Haslo: ")) != std::string::npos) {
-                std::string clearLineWithoutTag;
+    while (std::getline(currentFile, currentLine)) {
+        lines.push_back(currentLine);
 
-                for (int i = 7; i < currentLine.length(); i++) {
-                    clearLineWithoutTag += currentLine[i];
-                }
-                if (encrypt_decrypt_input(clearLineWithoutTag, false) == searchedPassword) {
-                    howManyTimesWasThePasswordFound++;
-                }
+        // Only process lines that begin with the expected tag
+        if (currentLine.find(encryptedTag) != std::string::npos) {
+            // Decrypt and remove tag
+            std::string decryptedLine = encrypt_decrypt_input(currentLine, false);
+            std::string clearPart = decryptedLine.substr(startOfLineTag.size());
+
+            // Count or print matches
+            if (clearPart == searchedPassword) {
+                matchCount++;
+            }
+
+            if (printResults) {
+                std::cout << lineNumber << ". " << decryptedLine << std::endl;
             }
         }
-        endMessage = "Wprowadzono haslo, ktore pojawilo sie w pliku - " 
-           + std::to_string(howManyTimesWasThePasswordFound)
-           + " razy.";
-        currentFile.close();
 
-        write_to_file(fileName, lines);
-    }
-    else {
-        std::cout << "Błąd podczas otwierania pliku \"" << fileName << "\", sprawdz podana sciezke lub nazwe pliku." << std::endl;
+        lineNumber++;
     }
 
-    return endMessage;
+    currentFile.close();
+    write_to_file(fileName, lines);
+
+    // Print the message only if the caller wants it
+    if (!printResults) {
+        return "Wprowadzono haslo, ktore pojawilo sie w pliku - " 
+                + std::to_string(matchCount)
+                + " razy.";
+    }
+  
+    return "";
 }
 
 void write_to_file(const std::string& fileName, std::vector<std::string> lines, int lineNumber = 0, std::string editedPassword = "") {

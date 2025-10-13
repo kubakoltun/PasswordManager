@@ -82,7 +82,8 @@ int main() {
                     std::cout << "Wyniki wyszukiwania:" << std::endl;
                     search_password(mainFile, wh_login, "Login: ");
 
-                } else {
+                } 
+                else {
                     std::cout << "Nie znaleziono Twojej komendy: \"" << wyszukaj_hasla << "\". \nSprobuj ponownie wprowadzic cyfre reprezentujaca dana komende.\n" << std::endl;
                     retry = true;
                 }
@@ -133,7 +134,8 @@ int main() {
                                 }
                                 else if (parametr_sorotwaniaDwa == "Login" || parametr_sorotwaniaDwa == "login") {
                                     parametr_sorotwaniaDwa = "Login: ";
-                                } else {
+                                } 
+                                else {
                                     std::cout << "Wprowadzono bledny parametr, zwroc uwage na wypisane w nawiasie dostepne parametry." << std::endl;
                                     retry = true;
                                 }
@@ -218,7 +220,8 @@ int main() {
                                 }
                                 else if (parametr_sorotwaniaDwa == "Login" || parametr_sorotwaniaDwa == "login") {
                                     parametr_sorotwaniaDwa = "Login: ";
-                                } else {
+                                } 
+                                else {
                                     std::cout << "Wprowadzono bledny parametr, zwroc uwage na wypisane w nawiasie dostepne parametry." << std::endl;
                                     retry = true;
                                 }
@@ -357,7 +360,7 @@ int main() {
                     std::cout << ">";
                     std::cin >> haslo;
                     std::cout << "Haslo jest " << password_strength_verifier(haslo) << "!" << std::endl;
-                    std::cout << search_all_passwords(mainFile, haslo) << std::endl;
+                    std::cout << search_password(mainFile, haslo, "Haslo: ", false) << std::endl;
                 }
                 else {
                     std::cout << "Nie rozpoznano komendy \"" << czy_wygenerowac_haslo << "\", aby wygenerowac haslo wpisz \"tak\", aby pominac wpisz \"-\"." << std::endl;
