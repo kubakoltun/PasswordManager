@@ -5,6 +5,8 @@
 #include "time_stamp.h"
 #include <string>
 
+const std::string DEFAULT_TAG = "Haslo: ";
+
 std::string generate_password(const int ilosc_znakow, const bool wielkie, const bool specjalne, const std::string& nazwa);
 std::string password_strength_verifier(std::string haslo);
 std::string password_edition(const std::string& nazwaPliku);

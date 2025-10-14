@@ -1,13 +1,12 @@
 #include "cypher.h"
 #include "files.h"
+#include "files.h"
 #include "time_stamp.h"
 #include <string>
 #include <vector>
 #include <random>
 #include <algorithm>
 #include <cctype>
-
-const std::string DEFAULT_TAG = "Haslo: ";
 
 /**
  * Generates a random password according to user defined rules (arguments).
@@ -214,35 +213,4 @@ std::string search_password(const std::string& fileName, const std::string& sear
     }
   
     return "";
-}
-
-void write_to_file(const std::string& fileName, std::vector<std::string> lines, int lineNumber = 0, std::string editedPassword = "") {
-    std::ofstream writeToFile;
-    writeToFile.open(fileName);
-    lineNumber--;
-
-    for (int i = 0; i < lines.size(); i++) {
-        if (i != lineNumber) {
-            if (i == 11 || i == 22 || i == 33) {
-                writeToFile << simulate_noise(i) << std::endl;
-            }
-            writeToFile << lines[i] << std::endl;
-        }
-        else {
-            if (i == 11 || i == 22 || i == 33) {
-                writeToFile << simulate_noise(i) << std::endl;
-            }
-            writeToFile << encrypt_decrypt_input(editedPassword) << std::endl;
-        }
-    }
-
-    if (lines.size() < 33) {
-        for (int i = lines.size(); i < 35; i++) {
-            if (i == 11 || i == 22 || i == 33) {
-                writeToFile << simulate_noise(i) << std::endl;
-            }
-            writeToFile << encrypt_decrypt_input(generate_random_string(rand() % 10)) << std::endl;
-        }
-    }
-    writeToFile.close();
 }
