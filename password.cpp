@@ -112,48 +112,45 @@ std::string password_strength_verifier(std::string password) {
  * @return message stating summary of the operation
  */
 std::string password_edition(const std::string& fileName) {
-    if (does_file_exist(fileName)) {
-        std::ifstream currentFile;
-        std::vector<std::string> lines;
-        std::string currentLine;
-        std::string editedPassword;
-        int lineNumber = 0;
-        currentFile.open(fileName);
-        int lineIndicatorForFile = 1;
+    if (!validate_whether_the_file_exists(fileName)) return "";
+    
+    std::ifstream currentFile;
+    std::vector<std::string> lines;
+    std::string currentLine;
+    std::string editedPassword;
+    int lineNumber = 0;
+    currentFile.open(fileName);
+    int lineIndicatorForFile = 1;
 
-        while (getline(currentFile, currentLine)) {
-            lines.push_back(currentLine);
+    while (getline(currentFile, currentLine)) {
+        lines.push_back(currentLine);
 
-            if (currentLine.find(encrypt_decrypt_input(DEFAULT_TAG)) != std::string::npos) {
-                std::string clearLineWithoutTag;
-                for (int i = DEFAULT_TAG.size(); i < currentLine.length(); i++) {
-                    clearLineWithoutTag += currentLine[i];
-                }
-                std::cout << lineIndicatorForFile << ". " << encrypt_decrypt_input(clearLineWithoutTag, false) << std::endl;
+        if (currentLine.find(encrypt_decrypt_input(DEFAULT_TAG)) != std::string::npos) {
+            std::string clearLineWithoutTag;
+            for (int i = DEFAULT_TAG.size(); i < currentLine.length(); i++) {
+                clearLineWithoutTag += currentLine[i];
             }
-            lineIndicatorForFile++;
+            std::cout << lineIndicatorForFile << ". " << encrypt_decrypt_input(clearLineWithoutTag, false) << std::endl;
         }
-
-        std::cout << "Wpisz numer hasla, ktore chcesz edytowac:" << std::endl;
-        std::cout << ">";
-        std::cin >> lineNumber;
-        std::cout << "Edytujesz haslo numer: " << lineNumber << ", wprowadz zmiany:" << std::endl;
-        std::cout << ">";
-        std::cin >> editedPassword;
-
-        currentFile.close();
-
-        if (lineNumber > lines.size()) {
-            std::cout << "Linia: " << lineNumber << ", nie znajduje sie w pliku." << std::endl;
-        }
-
-        write_to_file(fileName, lines, lineNumber, editedPassword);
-
-        return "Zapisano wprowadzone zmiany.";
+        lineIndicatorForFile++;
     }
-    else {
-        std::cout << "Błąd podczas otwierania pliku \"" << fileName << "\", sprawdz podana sciezke lub nazwe pliku." << std::endl;
+
+    std::cout << "Wpisz numer hasla, ktore chcesz edytowac:" << std::endl;
+    std::cout << ">";
+    std::cin >> lineNumber;
+    std::cout << "Edytujesz haslo numer: " << lineNumber << ", wprowadz zmiany:" << std::endl;
+    std::cout << ">";
+    std::cin >> editedPassword;
+
+    currentFile.close();
+
+    if (lineNumber > lines.size()) {
+        std::cout << "Linia: " << lineNumber << ", nie znajduje sie w pliku." << std::endl;
     }
+
+    write_to_file(fileName, lines, lineNumber, editedPassword);
+
+    return "Zapisano wprowadzone zmiany.";
 }
 
 /**
@@ -166,10 +163,7 @@ std::string password_edition(const std::string& fileName) {
  * @return summary message if printResults is false, otherwise empty string
  */
 std::string search_password(const std::string& fileName, const std::string& searchedPassword, const std::string& startOfLineTag = DEFAULT_TAG, bool printResults = true) {
-    if (!does_file_exist(fileName)) {
-        std::cout << "Błąd podczas otwierania pliku \"" << fileName << "\", sprawdz podana sciezke lub nazwe pliku." << std::endl;
-        return "";
-    }
+    if (!validate_whether_the_file_exists(fileName)) return "";
 
     std::ifstream currentFile(fileName);
     std::vector<std::string> lines;

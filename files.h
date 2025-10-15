@@ -14,3 +14,4 @@ std::string odczytanieZawartosciPliku(const std::string& nazwaPliku, bool usuwan
 std::string wpisanieDoPliku(std::string nazwaPliku, const std::string& nazwa, const std::string& haslo, std::string kategoria, const std::string& login, const std::string& strona);
 void sortowaniePoParametrach(const std::string& nazwaPliku, const std::string& parametr, const std::string& parametrDrugi, const std::string& wprowadzono, const std::string& wprowadzonoDwa);
 void write_to_file(const std::string& fileName, std::vector<std::string> lines, int lineNumber = 0, std::string editedPassword = "");
+bool validate_whether_the_file_exists(const std::string& fileName);
