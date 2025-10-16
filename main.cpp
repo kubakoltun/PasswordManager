@@ -379,7 +379,7 @@ int main() {
         else if (x == "5" || x == "5.") {
             std::string usuniecie_hasla;
             std::cout << "Lista Twoich hasel: " << std::endl;
-            std::cout << odczytanieZawartosciPliku(mainFile, true, false) << std::endl;
+            std::cout << read_file_content(mainFile, true, false) << std::endl;
             retry = true;
         }
         else if (x == "6" || x == "6.") {
@@ -392,7 +392,7 @@ int main() {
         }
         else if (x == "7" || x == "7.") {
             std::cout << "Lista Twoich kategorii wraz z przypisanymi do nich haslami: " << std::endl;
-            std::cout << odczytanieZawartosciPliku(mainFile, false, true) << std::endl;
+            std::cout << read_file_content(mainFile, false, true) << std::endl;
             retry = true;
         }
         else if (x == "0" || x == "0.") {

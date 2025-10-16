@@ -23,100 +23,99 @@ bool does_file_exist(const std::string& file) {
  * Ze wzgledu na wykonywanie operacji na danych do wpliku wprowadzane sa rowniez timestampy
  *
  * @param fileName plik, na ktorym bedzie wykonywana operacja
- * @param usuwanieHasla informacja dla metody czy usuwane bedzie haslo
- * @param usuwanieKategorii informacja czy nalezy wejsc w siezke usuwania kategorii
+ * @param isPasswordRemoval informacja dla metody czy usuwane bedzie haslo
+ * @param isCategoryRemoval informacja czy nalezy wejsc w siezke usuwania kategorii
  * @return zwracany jest komunikat o pomyslnosci wykonanych operacji
  */
-std::string odczytanieZawartosciPliku(const std::string& fileName, bool usuwanieHasla, bool usuwanieKategorii) {
+std::string read_file_content(const std::string& fileName, bool isPasswordRemoval, bool isCategoryRemoval) {
     if (!validate_whether_the_file_exists(fileName)) return "";
 
     std::ifstream currentFile(fileName);
-    std::vector<std::string> linie;
-    std::string obecnaLinia;
-    int potwierdzUsuwanie = 0;
-    int numerLinii = 0;
-    int wyswietlonaLinia = 1;
+    std::vector<std::string> lines;
+    std::string currentLine;
+    int lineNumber = 0;
+    int shownLine = 1;
+    int confirmationInput = 0;
 
-    while (getline(currentFile, obecnaLinia)) {
-        linie.push_back(obecnaLinia);
-        if (usuwanieHasla) {
-            if (obecnaLinia.find(encrypt_decrypt_input(DEFAULT_TAG)) != std::string::npos) {
-                std::string usuwanieZbednej;
-                for (int i = DEFAULT_TAG.size(); i < obecnaLinia.length(); i++) {
-                    usuwanieZbednej += obecnaLinia[i];
+    while (getline(currentFile, currentLine)) {
+        lines.push_back(currentLine);
+        if (isPasswordRemoval) {
+            if (currentLine.find(encrypt_decrypt_input(DEFAULT_TAG)) != std::string::npos) {
+                std::string clearLineWithoutTag;
+                for (int i = DEFAULT_TAG.size(); i < currentLine.length(); i++) {
+                    clearLineWithoutTag += currentLine[i];
                 }
-                std::cout << wyswietlonaLinia << ". " << encrypt_decrypt_input(obecnaLinia, false) << std::endl;
+                std::cout << shownLine << ". " << encrypt_decrypt_input(clearLineWithoutTag, false) << std::endl;
             }
         }
-        if (usuwanieKategorii) {
-            if (obecnaLinia.find(encrypt_decrypt_input("Kategoria: ")) != std::string::npos) {
-                std::cout << wyswietlonaLinia << ". " << encrypt_decrypt_input(obecnaLinia, false) << std::endl;
+        if (isCategoryRemoval) {
+            if (currentLine.find(encrypt_decrypt_input("Kategoria: ")) != std::string::npos) {
+                std::cout << shownLine << ". " << encrypt_decrypt_input(currentLine, false) << std::endl;
             }
-            if (obecnaLinia.find(encrypt_decrypt_input(DEFAULT_TAG)) != std::string::npos) {
-                std::cout << " " << encrypt_decrypt_input(obecnaLinia, false) << std::endl;
+            if (currentLine.find(encrypt_decrypt_input(DEFAULT_TAG)) != std::string::npos) {
+                std::cout << " " << encrypt_decrypt_input(currentLine, false) << std::endl;
             }
         }
-        wyswietlonaLinia++;
+        shownLine++;
     }
-    if (usuwanieHasla) {
+    if (isPasswordRemoval) {
         std::cout << "Wpisz numer hasla, ktore chcesz usunac:" << std::endl;
         std::cout << ">";
-        std::cin >> numerLinii;
-        std::cout << "Usuwasz haslo numer: " << numerLinii << ", \naby potwierdzic wpisz: " << numerLinii << std::endl;
+        std::cin >> lineNumber;
+        std::cout << "Usuwasz haslo numer: " << lineNumber << ", \naby potwierdzic wpisz: " << lineNumber << std::endl;
         std::cout << ">";
-        std::cin >> potwierdzUsuwanie;
-        if (numerLinii != potwierdzUsuwanie) {
+        std::cin >> confirmationInput;
+        if (lineNumber != confirmationInput) {
             return "Nie udalo ci sie potwierdzic usuniecia hasla.";
         }
     }
 
-    if (usuwanieKategorii) {
+    if (isCategoryRemoval) {
         std::cout << "Wpisz numer kategorii, ktora chcesz usunac (wraz z kategoria zostanie usuniete rowniez przypisane do niej haslo)." << std::endl;
         std::cout << ">";
-        std::cin >> numerLinii;
-        std::cout << "Usuwasz kategorie oraz haslo numer: " << numerLinii << ", \naby potwierdzic wpisz: " << numerLinii << std::endl;
+        std::cin >> lineNumber;
+        std::cout << "Usuwasz kategorie oraz haslo numer: " << lineNumber << ", \naby potwierdzic wpisz: " << lineNumber << std::endl;
         std::cout << ">";
-        std::cin >> potwierdzUsuwanie;
-        if (numerLinii != potwierdzUsuwanie) {
+        std::cin >> confirmationInput;
+        if (lineNumber != confirmationInput) {
             return "Nie udalo ci sie potwierdzic usuniecia kategorii.";
         }
     }
     currentFile.close();
 
-    if (numerLinii > linie.size()) {
-        std::cout << "Linia: " << numerLinii << ", nie znajduje sie w pliku." << std::endl;
+    if (lineNumber > lines.size()) {
+        std::cout << "Linia: " << lineNumber << ", nie znajduje sie w pliku." << std::endl;
     }
 
-    std::ofstream zapisDoPliku;
-    zapisDoPliku.open(fileName);
-    numerLinii--;
+    std::ofstream zapisDoPliku(fileName);
+    lineNumber--;
     int numerLiniiWstecz = 0;
 
-    if (usuwanieKategorii) {
-        numerLiniiWstecz = numerLinii++;
+    if (isCategoryRemoval) {
+        numerLiniiWstecz = lineNumber++;
     }
 
-    for (int i = 0; i < linie.size(); i++) {
-        if (usuwanieKategorii) {
-            if (i != numerLiniiWstecz && i != numerLinii) {
+    for (int i = 0; i < lines.size(); i++) {
+        if (isCategoryRemoval) {
+            if (i != numerLiniiWstecz && i != lineNumber) {
                 if (i == 11 || i == 22 || i == 33) {
                     zapisDoPliku << simulate_noise(i) << std::endl;
                 }
-                zapisDoPliku << linie[i] << std::endl;
+                zapisDoPliku << lines[i] << std::endl;
 
             }
         }
-        else if (i != numerLinii) {
+        else if (i != lineNumber) {
             if (i == 11 || i == 22 || i == 33) {
                 zapisDoPliku << simulate_noise(i) << std::endl;
             }
-            zapisDoPliku << linie[i] << std::endl;
+            zapisDoPliku << lines[i] << std::endl;
         }
     }
 
-    if (linie.size() < 33) {
+    if (lines.size() < 33) {
         std::string zmie = "g";
-        for (int i = linie.size(); i < 35; i++) {
+        for (int i = lines.size(); i < 35; i++) {
             zmie += 2;
             if (i == 11 || i == 22 || i == 33) {
                 zapisDoPliku << simulate_noise(i) << std::endl;
@@ -127,7 +126,6 @@ std::string odczytanieZawartosciPliku(const std::string& fileName, bool usuwanie
     zapisDoPliku.close();
 
     return "Dokonano wprowadzonych zmian.";
-
 }
 
 /**
@@ -137,29 +135,29 @@ std::string odczytanieZawartosciPliku(const std::string& fileName, bool usuwanie
  * Jako ze sa wykonywane operacje na danych do pliku jest rowniez wprowadzany timestamp
  *
  * @param fileName nazwa pliku, na ktorym beda wykonywane akcje
- * @param nazwa wprowadzona przez uzytkownika nazwa przypisana do hasla
- * @param haslo zadeklarowane przez uzytkownika haslo
- * @param kategoria kategoria ktora uzytkownik przypisal do hasla
+ * @param name wprowadzona przez uzytkownika nazwa przypisana do hasla
+ * @param password zadeklarowane przez uzytkownika haslo
+ * @param category kategoria ktora uzytkownik przypisal do hasla
  * @param login login podany przez uzytkownika
- * @param strona strona www przypisana do haslo przez uzytkownika
+ * @param page strona www przypisana do haslo przez uzytkownika
  * @return nazwa pliku, na ktorym zostala wykonana operacja jest zwracana jako czesc komunikatu
  */
-std::string wpisanieDoPliku(std::string fileName, const std::string& nazwa, const std::string& haslo, std::string kategoria, const std::string& login, const std::string& strona) {
+std::string wpisanieDoPliku(std::string fileName, const std::string& name, const std::string& password, std::string category, const std::string& login, const std::string& page) {
     if (!validate_whether_the_file_exists(fileName)) return "";
 
     std::fstream currentFile(fileName);
-    if (!nazwa.empty()) {
-        currentFile << encrypt_decrypt_input("Nazwa: ") << encrypt_decrypt_input(nazwa) << std::endl;
+    if (!name.empty()) {
+        currentFile << encrypt_decrypt_input("Nazwa: ") << encrypt_decrypt_input(name) << std::endl;
     }
-    currentFile << encrypt_decrypt_input("Kategoria: ") << encrypt_decrypt_input(std::move(kategoria)) << std::endl;
-    if (strona != "-") {
-        currentFile << encrypt_decrypt_input("Strona WWW: ") << encrypt_decrypt_input(strona) << std::endl;
+    currentFile << encrypt_decrypt_input("Kategoria: ") << encrypt_decrypt_input(std::move(category)) << std::endl;
+    if (page != "-") {
+        currentFile << encrypt_decrypt_input("Strona WWW: ") << encrypt_decrypt_input(page) << std::endl;
     }
     if (login != "-") {
         currentFile << encrypt_decrypt_input("Login: ") << encrypt_decrypt_input(login) << std::endl;
     }
-    if (!haslo.empty()) {
-        currentFile << encrypt_decrypt_input(DEFAULT_TAG) << encrypt_decrypt_input(haslo) << std::endl;
+    if (!password.empty()) {
+        currentFile << encrypt_decrypt_input(DEFAULT_TAG) << encrypt_decrypt_input(password) << std::endl;
     }
 
     // Rewind to start of file for reading
@@ -190,40 +188,39 @@ std::string wpisanieDoPliku(std::string fileName, const std::string& nazwa, cons
 void sortowaniePoParametrach(const std::string& fileName, const std::string& parametr, const std::string& parametrDrugi, const std::string& wprowadzono, const std::string& wprowadzonoDwa) {
     if (!validate_whether_the_file_exists(fileName)) return; // No file so skip the logic - exit early
 
-    std::ifstream obecnyPlik;
+    std::ifstream currentFile(fileName);
     std::vector<std::string> lines;
-    std::string obecnaLinia;
-    std::string wyswietlaneHaslo;
+    std::string currentLine;
     std::string poszukiwany = parametr + wprowadzono;
     std::string poszukiwanyDrugi = parametrDrugi + wprowadzonoDwa;
-    int numerLinii = 0;
-    int wyswietlonaLinia = 1;
-    obecnyPlik.open(fileName);
+    int lineNumber = 0;
+    int shownLine = 1;
     std::string przesuniecie;
+    bool isFound = false;
 
-    while (std::getline(obecnyPlik, obecnaLinia)) {
-        lines.push_back(obecnaLinia);
-        wyswietlonaLinia++;
+    while (std::getline(currentFile, currentLine)) {
+        lines.push_back(currentLine);
+        shownLine++;
     }
-    std::string znaleziono;
+
     for (const auto& i : lines) {
         if (i.find(encrypt_decrypt_input(poszukiwany)) != std::string::npos || i.find(encrypt_decrypt_input(poszukiwanyDrugi)) != std::string::npos) {
             przesuniecie = "1";
-            znaleziono = "0";
+            isFound = true;
             std::cout << encrypt_decrypt_input(i, false) << std::endl;
         }
-        if (obecnaLinia.find(encrypt_decrypt_input(DEFAULT_TAG)) != std::string::npos && przesuniecie == "1" && znaleziono == "0") {
+        if (currentLine.find(encrypt_decrypt_input(DEFAULT_TAG)) != std::string::npos && przesuniecie == "1" && isFound) {
             przesuniecie = "2";
             std::cout << encrypt_decrypt_input(i, false) << std::endl;
         }
-        if ((i.find(encrypt_decrypt_input(parametr)) != std::string::npos || i.find(encrypt_decrypt_input(parametrDrugi)) != std::string::npos) && znaleziono == "0" && przesuniecie == "2") {
+        if ((i.find(encrypt_decrypt_input(parametr)) != std::string::npos || i.find(encrypt_decrypt_input(parametrDrugi)) != std::string::npos) && isFound && przesuniecie == "2") {
             std::cout << i << std::endl;
         }
-        if (i.find(encrypt_decrypt_input(DEFAULT_TAG)) != std::string::npos && znaleziono == "0" && przesuniecie == "2") {
+        if (i.find(encrypt_decrypt_input(DEFAULT_TAG)) != std::string::npos && isFound && przesuniecie == "2") {
             std::cout << i << std::endl;
         }
     }
-    obecnyPlik.close();
+    currentFile.close();
 
     write_to_file(fileName, lines);
 }
