@@ -150,7 +150,7 @@ int main() {
                         }
                     } while (retry);
                     std::cout << "Posortowana lista: " << std::endl;
-                    sortowaniePoParametrach(mainFile, "Nazwa: ", parametr_sorotwaniaDwa, nazwa_sorotwania, wartosc_parametru);
+                    sort_and_show_passwords_per_input(mainFile, "Nazwa: ", parametr_sorotwaniaDwa, nazwa_sorotwania, wartosc_parametru);
                 }
                 else if (parametr_sorotwania == "2" || parametr_sorotwania == "2.") {
                     std::cout << "Wpisz kategorie, wedlug ktorej maja zostac posotrowane hasla:" << std::endl;
@@ -193,7 +193,7 @@ int main() {
                         }
                     } while (retry);
                     std::cout << "Posortowana lista: " << std::endl;
-                    sortowaniePoParametrach(mainFile, "Kategoria: ", parametr_sorotwaniaDwa, nazwa_sorotwania, wartosc_parametru);
+                    sort_and_show_passwords_per_input(mainFile, "Kategoria: ", parametr_sorotwaniaDwa, nazwa_sorotwania, wartosc_parametru);
                 }
                 else if (parametr_sorotwania == "3" || parametr_sorotwania == "3.") {
                     std::cout << "Wpisz strone, wedlug ktorej maja zostac posotrowane hasla:" << std::endl;
@@ -236,7 +236,7 @@ int main() {
                         }
                     } while (retry);
                     std::cout << "Posortowana lista: " << std::endl;
-                    sortowaniePoParametrach(mainFile, "Strona WWW: ", parametr_sorotwaniaDwa, nazwa_sorotwania, wartosc_parametru);
+                    sort_and_show_passwords_per_input(mainFile, "Strona WWW: ", parametr_sorotwaniaDwa, nazwa_sorotwania, wartosc_parametru);
                 }
                 else if (parametr_sorotwania == "4" || parametr_sorotwania == "4.") {
                     std::cout << "Wpisz login, wedlug ktorego maja zostac posotrowane hasla:" << std::endl;
@@ -278,7 +278,7 @@ int main() {
                         }
                     } while (retry);
                     std::cout << "Posortowana lista: " << std::endl;
-                    sortowaniePoParametrach(mainFile, "Login: ", parametr_sorotwaniaDwa, nazwa_sorotwania, wartosc_parametru);
+                    sort_and_show_passwords_per_input(mainFile, "Login: ", parametr_sorotwaniaDwa, nazwa_sorotwania, wartosc_parametru);
                 }
                 else {
                     std::cout << "Nie znaleziono Twojej komendy: \"" << parametr_sorotwania << "\". \nSprobuj ponownie wprowadzic cyfre reprezentujaca dana komende.\n" << std::endl;
@@ -368,7 +368,7 @@ int main() {
                 }
             } while (retry);
 
-            std::cout << "Pomyslnie wprowadzono haslo do pliku: " << wpisanieDoPliku(mainFile, nazwa, haslo, kategoria, login, strona) << std::endl;
+            std::cout << "Pomyslnie wprowadzono haslo do pliku: " << enter_record_into_file(mainFile, nazwa, haslo, kategoria, login, strona) << std::endl;
             retry = true;
         }
         else if (x == "4" || x == "4.") {
@@ -387,7 +387,7 @@ int main() {
             std::cout << "Wprowadz nazwe nowej kategorii:" << std::endl;
             std::cout << ">";
             std::getline(std::cin >> std::ws, nowa_kategoria);
-            std::cout << "Wprowadzono nowa kategorie do pliku: " << wpisanieDoPliku(mainFile, "", "", nowa_kategoria, "-", "-");
+            std::cout << "Wprowadzono nowa kategorie do pliku: " << enter_record_into_file(mainFile, "", "", nowa_kategoria, "-", "-");
             retry = true;
         }
         else if (x == "7" || x == "7.") {

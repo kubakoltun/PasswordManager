@@ -87,43 +87,41 @@ std::string read_file_content(const std::string& fileName, bool isPasswordRemova
         std::cout << "Linia: " << lineNumber << ", nie znajduje sie w pliku." << std::endl;
     }
 
-    std::ofstream zapisDoPliku(fileName);
+    std::ofstream writeToFile(fileName);
     lineNumber--;
-    int numerLiniiWstecz = 0;
+    int previousLineNumber = 0;
 
     if (isCategoryRemoval) {
-        numerLiniiWstecz = lineNumber++;
+        previousLineNumber = lineNumber++;
     }
 
     for (int i = 0; i < lines.size(); i++) {
         if (isCategoryRemoval) {
-            if (i != numerLiniiWstecz && i != lineNumber) {
+            if (i != previousLineNumber && i != lineNumber) {
                 if (i == 11 || i == 22 || i == 33) {
-                    zapisDoPliku << simulate_noise(i) << std::endl;
+                    writeToFile << simulate_noise(i) << std::endl;
                 }
-                zapisDoPliku << lines[i] << std::endl;
+                writeToFile << lines[i] << std::endl;
 
             }
         }
         else if (i != lineNumber) {
             if (i == 11 || i == 22 || i == 33) {
-                zapisDoPliku << simulate_noise(i) << std::endl;
+                writeToFile << simulate_noise(i) << std::endl;
             }
-            zapisDoPliku << lines[i] << std::endl;
+            writeToFile << lines[i] << std::endl;
         }
     }
 
     if (lines.size() < 33) {
-        std::string zmie = "g";
         for (int i = lines.size(); i < 35; i++) {
-            zmie += 2;
             if (i == 11 || i == 22 || i == 33) {
-                zapisDoPliku << simulate_noise(i) << std::endl;
+                writeToFile << simulate_noise(i) << std::endl;
             }
-            zapisDoPliku << encrypt_decrypt_input("1nied3ozla2man4ia5") << encrypt_decrypt_input(zmie) << std::endl;
+            writeToFile << encrypt_decrypt_input(generate_random_string(rand() % 10)) << std::endl;
         }
     }
-    zapisDoPliku.close();
+    writeToFile.close();
 
     return "Dokonano wprowadzonych zmian.";
 }
@@ -142,7 +140,7 @@ std::string read_file_content(const std::string& fileName, bool isPasswordRemova
  * @param page strona www przypisana do haslo przez uzytkownika
  * @return nazwa pliku, na ktorym zostala wykonana operacja jest zwracana jako czesc komunikatu
  */
-std::string wpisanieDoPliku(std::string fileName, const std::string& name, const std::string& password, std::string category, const std::string& login, const std::string& page) {
+std::string enter_record_into_file(std::string fileName, const std::string& name, const std::string& password, std::string category, const std::string& login, const std::string& page) {
     if (!validate_whether_the_file_exists(fileName)) return "";
 
     std::fstream currentFile(fileName);
@@ -185,7 +183,7 @@ std::string wpisanieDoPliku(std::string fileName, const std::string& name, const
  * @param wprowadzono wartosc parametru wprowadzona przez uzytkownika
  * @param wprowadzonoDwa wartosc drugiego parametru podanego przez uzytkownika
  */
-void sortowaniePoParametrach(const std::string& fileName, const std::string& parametr, const std::string& parametrDrugi, const std::string& wprowadzono, const std::string& wprowadzonoDwa) {
+void sort_and_show_passwords_per_input(const std::string& fileName, const std::string& parametr, const std::string& parametrDrugi, const std::string& wprowadzono, const std::string& wprowadzonoDwa) {
     if (!validate_whether_the_file_exists(fileName)) return; // No file so skip the logic - exit early
 
     std::ifstream currentFile(fileName);
