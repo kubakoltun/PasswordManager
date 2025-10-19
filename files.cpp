@@ -15,17 +15,13 @@ bool does_file_exist(const std::string& file) {
 }
 
 /**
- * Po otworzeniu pliku odczytywana jest jego tresc po kazdej linii
- * Linie pliku sa pushowane na koniec wektora
- * Uzytkownik dostaje liste parametrow, ktore chce usunac
- * Uzytkownik jest proszony o potwierdzenie wyboru nastepnie aby sfinalizowac zmiany wprowadzane sa zmiany do pliku
- * Linie, ktore wybral uzytkownik nie sa wprowadzane do pliku przez co zostaja usuniete
- * Ze wzgledu na wykonywanie operacji na danych do wpliku wprowadzane sa rowniez timestampy
+ * Reads all lines from the given file into memory, displays them to the user,
+ * and allows the user to remove a selected password or category entry
  *
- * @param fileName plik, na ktorym bedzie wykonywana operacja
- * @param isPasswordRemoval informacja dla metody czy usuwane bedzie haslo
- * @param isCategoryRemoval informacja czy nalezy wejsc w siezke usuwania kategorii
- * @return zwracany jest komunikat o pomyslnosci wykonanych operacji
+ * @param fileName the name of the file to operate on
+ * @param isPasswordRemoval if true, password entries are listed and can be removed
+ * @param isCategoryRemoval if true, categories (and their related passwords) are listed and can be removed
+ * @return a message describing the outcome of the operation
  */
 std::string read_file_content(const std::string& fileName, bool isPasswordRemoval, bool isCategoryRemoval) {
     if (!validate_whether_the_file_exists(fileName)) return "";
@@ -87,63 +83,30 @@ std::string read_file_content(const std::string& fileName, bool isPasswordRemova
         std::cout << "Linia: " << lineNumber << ", nie znajduje sie w pliku." << std::endl;
     }
 
-    std::ofstream writeToFile(fileName);
-    lineNumber--;
-    int previousLineNumber = 0;
-
-    if (isCategoryRemoval) {
-        previousLineNumber = lineNumber++;
-    }
-
-    for (int i = 0; i < lines.size(); i++) {
-        if (isCategoryRemoval) {
-            if (i != previousLineNumber && i != lineNumber) {
-                if (i == 11 || i == 22 || i == 33) {
-                    writeToFile << simulate_noise(i) << std::endl;
-                }
-                writeToFile << lines[i] << std::endl;
-
-            }
-        }
-        else if (i != lineNumber) {
-            if (i == 11 || i == 22 || i == 33) {
-                writeToFile << simulate_noise(i) << std::endl;
-            }
-            writeToFile << lines[i] << std::endl;
-        }
-    }
-
-    if (lines.size() < 33) {
-        for (int i = lines.size(); i < 35; i++) {
-            if (i == 11 || i == 22 || i == 33) {
-                writeToFile << simulate_noise(i) << std::endl;
-            }
-            writeToFile << encrypt_decrypt_input(generate_random_string(rand() % 10)) << std::endl;
-        }
-    }
-    writeToFile.close();
+    write_to_file(fileName, lines, 0, "", true);
 
     return "Dokonano wprowadzonych zmian.";
 }
 
 /**
+ * Writes a new password record to the specified file
  * Po sprawdzeniu czy plik otworzyl sie poprawnie sprawdzane jest czy, ktorys z parametrow zostal pominiety
  * Do pliku wprowadzane sa wpisane przez uzytkownika biezaco szyfrowane parametry
  * Dana wartosc parametru jest poprzedzona rowniez szyfrowanym kluczem
  * Jako ze sa wykonywane operacje na danych do pliku jest rowniez wprowadzany timestamp
  *
- * @param fileName nazwa pliku, na ktorym beda wykonywane akcje
- * @param name wprowadzona przez uzytkownika nazwa przypisana do hasla
- * @param password zadeklarowane przez uzytkownika haslo
- * @param category kategoria ktora uzytkownik przypisal do hasla
- * @param login login podany przez uzytkownika
- * @param page strona www przypisana do haslo przez uzytkownika
- * @return nazwa pliku, na ktorym zostala wykonana operacja jest zwracana jako czesc komunikatu
+ * @param fileName the file where data should be stored
+ * @param name the name assigned to the password
+ * @param password the password value
+ * @param category the category assigned by the user
+ * @param login the login associated with the password (optional)
+ * @param page the website associated with the password (optional)
+ * @return a message confirming that the record was saved
  */
 std::string enter_record_into_file(std::string fileName, const std::string& name, const std::string& password, std::string category, const std::string& login, const std::string& page) {
     if (!validate_whether_the_file_exists(fileName)) return "";
 
-    std::fstream currentFile(fileName);
+    std::ofstream currentFile(fileName, std::ios::app);
     if (!name.empty()) {
         currentFile << encrypt_decrypt_input("Nazwa: ") << encrypt_decrypt_input(name) << std::endl;
     }
@@ -158,64 +121,51 @@ std::string enter_record_into_file(std::string fileName, const std::string& name
         currentFile << encrypt_decrypt_input(DEFAULT_TAG) << encrypt_decrypt_input(password) << std::endl;
     }
 
-    // Rewind to start of file for reading
-    currentFile.seekg(0);
-    std::vector<std::string> lines;
-    std::string currentLine;
-
-    while (getline(currentFile, currentLine)) {
-        lines.push_back(currentLine);
-    }
-    currentFile.close();
-
-    write_to_file(fileName, lines);
-
     return fileName;
 }
 
 /**
- * Metoda zapisuje wartosc pliku do wektora, ktory nastepnie jest przeszukiwany w petli
- * W petli poszukiwane sa parametry wprowadzone przez uzytkownika, dla ktorych pokaza sie hasla
+ * Searches for passwords in the given file based on one or two search parameters (tags and their values) and displays matching records
  *
- * @param fileName plik, na ktrym bedzie wykonywana operacja
- * @param parametr klucz wartosci parametru podany ze wzgledu na wybor uzytkownika
- * @param parametrDrugi w przypadku sortowania po dwoch parametrach podany przez uzytkownika klucz wartosci parametru
- * @param wprowadzono wartosc parametru wprowadzona przez uzytkownika
- * @param wprowadzonoDwa wartosc drugiego parametru podanego przez uzytkownika
+ * @param fileName the file to read from
+ * @param categoryTag the primary search key (e.g., "Kategoria: ")
+ * @param secondaryCategoryTag an optional secondary key for combined filtering
+ * @param searchedTagValue the value to search for in the primary category
+ * @param searchedSecondTagValue the value to search for in the secondary category
  */
-void sort_and_show_passwords_per_input(const std::string& fileName, const std::string& parametr, const std::string& parametrDrugi, const std::string& wprowadzono, const std::string& wprowadzonoDwa) {
+void sort_and_show_passwords_per_input(const std::string& fileName, const std::string& categoryTag, const std::string& secondaryCategoryTag, const std::string& searchedTagValue, const std::string& searchedSecondTagValue) {
     if (!validate_whether_the_file_exists(fileName)) return; // No file so skip the logic - exit early
 
     std::ifstream currentFile(fileName);
     std::vector<std::string> lines;
     std::string currentLine;
-    std::string poszukiwany = parametr + wprowadzono;
-    std::string poszukiwanyDrugi = parametrDrugi + wprowadzonoDwa;
+    std::string wholeSearchedPhrase = categoryTag + searchedTagValue;
+    std::string secondWholeSearchedPhrase = secondaryCategoryTag + searchedSecondTagValue;
+    SearchState searchState = SearchState::Searching;
+    bool isFound = false;
     int lineNumber = 0;
     int shownLine = 1;
-    std::string przesuniecie;
-    bool isFound = false;
 
     while (std::getline(currentFile, currentLine)) {
         lines.push_back(currentLine);
         shownLine++;
     }
 
-    for (const auto& i : lines) {
-        if (i.find(encrypt_decrypt_input(poszukiwany)) != std::string::npos || i.find(encrypt_decrypt_input(poszukiwanyDrugi)) != std::string::npos) {
-            przesuniecie = "1";
+    for (const auto& line : lines) {
+        if (line.find(encrypt_decrypt_input(wholeSearchedPhrase)) != std::string::npos || line.find(encrypt_decrypt_input(secondWholeSearchedPhrase)) != std::string::npos) {
+            searchState = SearchState::FoundFirstMatch;
             isFound = true;
-            std::cout << encrypt_decrypt_input(i, false) << std::endl;
+            std::cout << encrypt_decrypt_input(line, false) << std::endl;
         }
-        if (currentLine.find(encrypt_decrypt_input(DEFAULT_TAG)) != std::string::npos && przesuniecie == "1" && isFound) {
-            przesuniecie = "2";
-            std::cout << encrypt_decrypt_input(i, false) << std::endl;
+        if (currentLine.find(encrypt_decrypt_input(DEFAULT_TAG)) != std::string::npos && searchState == SearchState::FoundFirstMatch && isFound) {
+            searchState = SearchState::FoundAfterTag;
+            std::cout << encrypt_decrypt_input(line, false) << std::endl;
         }
-        if ((i.find(encrypt_decrypt_input(parametr)) != std::string::npos || i.find(encrypt_decrypt_input(parametrDrugi)) != std::string::npos) && isFound && przesuniecie == "2") {
-            std::cout << i << std::endl;
+        if ((line.find(encrypt_decrypt_input(categoryTag)) != std::string::npos || line.find(encrypt_decrypt_input(secondaryCategoryTag)) != std::string::npos) && isFound && searchState == SearchState::FoundAfterTag) {
+            std::cout << line << std::endl;
         }
-        if (i.find(encrypt_decrypt_input(DEFAULT_TAG)) != std::string::npos && isFound && przesuniecie == "2") {
-            std::cout << i << std::endl;
+        if (line.find(encrypt_decrypt_input(DEFAULT_TAG)) != std::string::npos && isFound && searchState == SearchState::FoundAfterTag) {
+            std::cout << line << std::endl;
         }
     }
     currentFile.close();
@@ -223,33 +173,39 @@ void sort_and_show_passwords_per_input(const std::string& fileName, const std::s
     write_to_file(fileName, lines);
 }
 
-void write_to_file(const std::string& fileName, std::vector<std::string> lines, int lineNumber = 0, std::string editedPassword = "") {
-    std::ofstream writeToFile;
-    writeToFile.open(fileName);
+/**
+ * Writes all given lines back to a file, optionally removing or modifying specific ones
+ * 
+ * @param fileName the file to write to
+ * @param lines the list of existing file lines
+ * @param lineNumber the line to modify or remove
+ * @param editedPassword the replacement password (if editing a line)
+ * @param isCategoryRemoval if true, removes both a category and its password
+ */
+void write_to_file(const std::string& fileName, std::vector<std::string> lines, int lineNumber = 0, std::string editedPassword = "", bool isCategoryRemoval = false) {
+    std::ofstream writeToFile(fileName);
     lineNumber--;
+    int previousLineNumber = isCategoryRemoval ? lineNumber++ : 0;
 
-    // todo what were these magic numbers
     for (int i = 0; i < lines.size(); i++) {
-        if (i != lineNumber) {
-            if (i == 11 || i == 22 || i == 33) {
-                writeToFile << simulate_noise(i) << std::endl;
-            }
-            writeToFile << lines[i] << std::endl;
+        // Skip lines if removing a category
+        if (isCategoryRemoval && (i == previousLineNumber || i == lineNumber)) {
+            continue;
+        }
+
+        if (i == lineNumber) {
+            write_line(writeToFile, encrypt_decrypt_input(editedPassword), i);
         }
         else {
-            if (i == 11 || i == 22 || i == 33) {
-                writeToFile << simulate_noise(i) << std::endl;
-            }
-            writeToFile << encrypt_decrypt_input(editedPassword) << std::endl;
+            write_line(writeToFile, lines[i], i);
         }
     }
 
+    // Making some more noise if the line is to short
     if (lines.size() < 33) {
         for (int i = lines.size(); i < 35; i++) {
-            if (i == 11 || i == 22 || i == 33) {
-                writeToFile << simulate_noise(i) << std::endl;
-            }
-            writeToFile << encrypt_decrypt_input(generate_random_string(rand() % 10)) << std::endl;
+            std::string randomStr = generate_random_string(rand() % 10);
+            write_line(writeToFile, encrypt_decrypt_input(randomStr), i);
         }
     }
     writeToFile.close();
@@ -262,4 +218,15 @@ bool validate_whether_the_file_exists(const std::string& fileName) {
     }
 
     return true;
+}
+
+bool is_timestamp_line(int i) {
+    static const int timestamps[] = {11, 22, 33};
+    return std::find(std::begin(timestamps), std::end(timestamps), i) != std::end(timestamps);
+}
+
+void write_line(std::ofstream& out, const std::string& text, int i) {
+    if (is_timestamp_line(i))
+        out << simulate_noise(i) << '\n';
+    out << text << '\n';
 }

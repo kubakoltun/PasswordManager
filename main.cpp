@@ -111,7 +111,7 @@ int main() {
                 std::cin >> parametr_sorotwania;
 
                 if (parametr_sorotwania == "1" || parametr_sorotwania == "1.") {
-                    std::cout << "Wpisz naze, wedlug ktorej maja zostac posotrowane hasla:" << std::endl;
+                    std::cout << "Wpisz nazwe, wedlug ktorej maja zostac posotrowane hasla:" << std::endl;
                     std::cout << ">";
                     std::getline(std::cin >> std::ws, nazwa_sorotwania);
 
