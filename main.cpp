@@ -24,13 +24,13 @@ int main() {
 
     do {
         retry = false;
-        std::string x;
+        std::string userInputMainCommand;
         std::cout << "Wybierz interesujaca Cie komende, wpisujac jej numer: \n 1. Wyszukaj hasla \n 2. Posortuj hasla \n 3. Dodaj haslo \n 4. Edytuj haslo \n 5. Usun haslo \n 6. Dodaj kategorie \n 7. Usun kategorie \n 0. Wyjscie" << std::endl;
         std::cout << ">";
-        std::cin >> x;
+        std::cin >> userInputMainCommand;
 
-        if (x == "1" || x == "1.") {
-
+        // todo oh man 
+        if (userInputMainCommand == "1" || userInputMainCommand == "1.") {
             do {
                 retry = false;
                 std::string wyszukaj_hasla;
@@ -90,7 +90,7 @@ int main() {
             } while (retry);
             retry = true;
         }
-        else if (x == "2" || x == "2.") {
+        else if (userInputMainCommand == "2" || userInputMainCommand == "2.") {
             do {
                 retry = false;
                 std::string parametr_sorotwania;
@@ -287,7 +287,7 @@ int main() {
             } while (retry);
             retry = true;
         }
-        else if (x == "3" || x == "3.") {
+        else if (userInputMainCommand == "3" || userInputMainCommand == "3.") {
             std::string nazwa;
             std::string kategoria;
             std::string strona;
@@ -371,18 +371,18 @@ int main() {
             std::cout << "Pomyslnie wprowadzono haslo do pliku: " << enter_record_into_file(mainFile, nazwa, haslo, kategoria, login, strona) << std::endl;
             retry = true;
         }
-        else if (x == "4" || x == "4.") {
+        else if (userInputMainCommand == "4" || userInputMainCommand == "4.") {
             std::cout << "Lista Twoich hasel: " << std::endl;
             std::cout << password_edition(mainFile) << std::endl;
             retry = true;
         }
-        else if (x == "5" || x == "5.") {
+        else if (userInputMainCommand == "5" || userInputMainCommand == "5.") {
             std::string usuniecie_hasla;
             std::cout << "Lista Twoich hasel: " << std::endl;
             std::cout << read_file_content(mainFile, true, false) << std::endl;
             retry = true;
         }
-        else if (x == "6" || x == "6.") {
+        else if (userInputMainCommand == "6" || userInputMainCommand == "6.") {
             std::string nowa_kategoria;
             std::cout << "Wprowadz nazwe nowej kategorii:" << std::endl;
             std::cout << ">";
@@ -390,16 +390,16 @@ int main() {
             std::cout << "Wprowadzono nowa kategorie do pliku: " << enter_record_into_file(mainFile, "", "", nowa_kategoria, "-", "-");
             retry = true;
         }
-        else if (x == "7" || x == "7.") {
+        else if (userInputMainCommand == "7" || userInputMainCommand == "7.") {
             std::cout << "Lista Twoich kategorii wraz z przypisanymi do nich haslami: " << std::endl;
             std::cout << read_file_content(mainFile, false, true) << std::endl;
             retry = true;
         }
-        else if (x == "0" || x == "0.") {
+        else if (userInputMainCommand == "0" || userInputMainCommand == "0.") {
             retry = false;
         }
         else {
-            std::cout << "Nie znaleziono Twojej komendy: \"" << x << "\". \nSprobuj ponownie wprowadzic cyfre reprezentujaca dana komende.\n" << std::endl;
+            std::cout << "Nie znaleziono Twojej komendy: \"" << userInputMainCommand << "\". \nSprobuj ponownie wprowadzic cyfre reprezentujaca dana komende.\n" << std::endl;
             retry = true;
         }
     } while (retry);
