@@ -67,10 +67,10 @@ int main() {
 void sort_password() {
     do {
         retry = false;
-        std::string parametr_sorotwania;
-        std::string parametr_sorotwaniaDwa;
-        std::string nazwa_sorotwania;
-        std::string kategoria_sorotwania;
+        std::string sortingParameterOne;
+        std::string sortingParameterTwo;
+        std::string valueThatWillBeSortedBy;
+        std::string sortingCategory;
         std::string strona_sorotwania;
         std::string login_sorotwania;
         std::string wartosc_parametru;
@@ -82,16 +82,16 @@ void sort_password() {
         std::cout << " 3. Strona WWW" << std::endl;
         std::cout << " 4. Login" << std::endl;
         std::cout << ">";
-        std::cin >> parametr_sorotwania;
+        std::cin >> sortingParameterOne;
 
-        if (parametr_sorotwania == "1" || parametr_sorotwania == "1.") {
+        if (sortingParameterOne == "1" || sortingParameterOne == "1.") {
             std::cout << "Wpisz nazwe, wedlug ktorej maja zostac posotrowane hasla:" << std::endl;
             std::cout << ">";
-            std::getline(std::cin >> std::ws, nazwa_sorotwania);
+            std::getline(std::cin >> std::ws, valueThatWillBeSortedBy);
 
             do {
                 retry = false;
-                std::cout << "Czy dodac drugi parametr sortowania? Wpisz \"tak\", aby wprowadzic lub \"-\", aby pominac." << std::endl;
+                std::cout << "Czy dodac drugi parametr sortowania? Wpisz \"tak\", aby wprowadzic lub \"nie\", aby pominac." << std::endl;
                 std::cout << ">";
                 std::cin >> kolejny_parametr;
                 if (kolejny_parametr == "tak") {
@@ -99,15 +99,15 @@ void sort_password() {
                         retry = false;
                         std::cout << "Wpisz parametr wobec, ktorego maja byc sortowane hasla (\"Kategoria\", \"Strona WWW\", \"Login\")." << std::endl;
                         std::cout << ">";
-                        std::getline(std::cin >> std::ws, parametr_sorotwaniaDwa);
-                        if (parametr_sorotwaniaDwa == "kategoria" || parametr_sorotwaniaDwa == "Kategoria") {
-                            parametr_sorotwaniaDwa = "Kategoria: ";
+                        std::getline(std::cin >> std::ws, sortingParameterTwo);
+                        if (sortingParameterTwo == "kategoria" || sortingParameterTwo == "Kategoria") {
+                            sortingParameterTwo = "Kategoria: ";
                         }
-                        else if (parametr_sorotwaniaDwa == "Strona" || parametr_sorotwaniaDwa == "strona" || parametr_sorotwaniaDwa == "Strona WWW" || parametr_sorotwaniaDwa == "strona www") {
-                            parametr_sorotwaniaDwa = "Strona WWW: ";
+                        else if (sortingParameterTwo == "Strona" || sortingParameterTwo == "strona" || sortingParameterTwo == "Strona WWW" || sortingParameterTwo == "strona www") {
+                            sortingParameterTwo = "Strona WWW: ";
                         }
-                        else if (parametr_sorotwaniaDwa == "Login" || parametr_sorotwaniaDwa == "login") {
-                            parametr_sorotwaniaDwa = "Login: ";
+                        else if (sortingParameterTwo == "Login" || sortingParameterTwo == "login") {
+                            sortingParameterTwo = "Login: ";
                         } 
                         else {
                             std::cout << "Wprowadzono bledny parametr, zwroc uwage na wypisane w nawiasie dostepne parametry." << std::endl;
@@ -118,18 +118,18 @@ void sort_password() {
                     std::cout << ">";
                     std::getline(std::cin >> std::ws, wartosc_parametru);
                 }
-                else if (kolejny_parametr != "tak" && kolejny_parametr != "-") {
+                else if (kolejny_parametr != "tak" && kolejny_parametr != "nie") {
                     std::cout << "Nie rozmozpano Twojej komendy \"" << kolejny_parametr << "\", zwroc uwage aby nie wpisywac znakow specjalnych." << std::endl;
                     retry = true;
                 }
             } while (retry);
             std::cout << "Posortowana lista: " << std::endl;
-            sort_and_show_passwords_per_input(mainFile, "Nazwa: ", parametr_sorotwaniaDwa, nazwa_sorotwania, wartosc_parametru);
+            sort_and_show_passwords_per_input(mainFile, "Nazwa: ", sortingParameterTwo, valueThatWillBeSortedBy, wartosc_parametru);
         }
-        else if (parametr_sorotwania == "2" || parametr_sorotwania == "2.") {
+        else if (sortingParameterOne == "2" || sortingParameterOne == "2.") {
             std::cout << "Wpisz kategorie, wedlug ktorej maja zostac posotrowane hasla:" << std::endl;
             std::cout << ">";
-            std::getline(std::cin >> std::ws, kategoria_sorotwania);
+            std::getline(std::cin >> std::ws, sortingCategory);
 
             do {
                 retry = false;
@@ -142,15 +142,15 @@ void sort_password() {
                         retry = false;
                         std::cout << "Wpisz parametr wobec, ktorego maja byc sortowane hasla (\"Nazwa\", \"Strona WWW\", \"Login\")." << std::endl;
                         std::cout << ">";
-                        std::getline(std::cin >> std::ws, parametr_sorotwaniaDwa);
-                        if (parametr_sorotwaniaDwa == "nazwa" || parametr_sorotwaniaDwa == "Nazwa") {
-                            parametr_sorotwaniaDwa = "Nazwa: ";
+                        std::getline(std::cin >> std::ws, sortingParameterTwo);
+                        if (sortingParameterTwo == "nazwa" || sortingParameterTwo == "Nazwa") {
+                            sortingParameterTwo = "Nazwa: ";
                         }
-                        else if (parametr_sorotwaniaDwa == "Strona" || parametr_sorotwaniaDwa == "strona" || parametr_sorotwaniaDwa == "Strona WWW" || parametr_sorotwaniaDwa == "strona www") {
-                            parametr_sorotwaniaDwa = "Strona WWW: ";
+                        else if (sortingParameterTwo == "Strona" || sortingParameterTwo == "strona" || sortingParameterTwo == "Strona WWW" || sortingParameterTwo == "strona www") {
+                            sortingParameterTwo = "Strona WWW: ";
                         }
-                        else if (parametr_sorotwaniaDwa == "Login" || parametr_sorotwaniaDwa == "login") {
-                            parametr_sorotwaniaDwa = "Login: ";
+                        else if (sortingParameterTwo == "Login" || sortingParameterTwo == "login") {
+                            sortingParameterTwo = "Login: ";
                         }
                         else {
                             std::cout << "Wprowadzono bledny parametr, zwroc uwage na wypisane w nawiasie dostepne parametry." << std::endl;
@@ -167,9 +167,9 @@ void sort_password() {
                 }
             } while (retry);
             std::cout << "Posortowana lista: " << std::endl;
-            sort_and_show_passwords_per_input(mainFile, "Kategoria: ", parametr_sorotwaniaDwa, nazwa_sorotwania, wartosc_parametru);
+            sort_and_show_passwords_per_input(mainFile, "Kategoria: ", sortingParameterTwo, valueThatWillBeSortedBy, wartosc_parametru);
         }
-        else if (parametr_sorotwania == "3" || parametr_sorotwania == "3.") {
+        else if (sortingParameterOne == "3" || sortingParameterOne == "3.") {
             std::cout << "Wpisz strone, wedlug ktorej maja zostac posotrowane hasla:" << std::endl;
             std::cout << ">";
             std::getline(std::cin >> std::ws, strona_sorotwania);
@@ -185,15 +185,15 @@ void sort_password() {
                         retry = false;
                         std::cout << "Wpisz parametr wobec, ktorego maja byc sortowane hasla (\"Nazwa\", \"Kategoria\", \"Login\")." << std::endl;
                         std::cout << ">";
-                        std::getline(std::cin >> std::ws, parametr_sorotwaniaDwa);
-                        if (parametr_sorotwaniaDwa == "kategoria" || parametr_sorotwaniaDwa == "Kategoria") {
-                            parametr_sorotwaniaDwa = "Kategoria: ";
+                        std::getline(std::cin >> std::ws, sortingParameterTwo);
+                        if (sortingParameterTwo == "kategoria" || sortingParameterTwo == "Kategoria") {
+                            sortingParameterTwo = "Kategoria: ";
                         }
-                        else if (parametr_sorotwaniaDwa == "Nazwa" || parametr_sorotwaniaDwa == "nazwa") {
-                            parametr_sorotwaniaDwa = "Nazwa: ";
+                        else if (sortingParameterTwo == "Nazwa" || sortingParameterTwo == "nazwa") {
+                            sortingParameterTwo = "Nazwa: ";
                         }
-                        else if (parametr_sorotwaniaDwa == "Login" || parametr_sorotwaniaDwa == "login") {
-                            parametr_sorotwaniaDwa = "Login: ";
+                        else if (sortingParameterTwo == "Login" || sortingParameterTwo == "login") {
+                            sortingParameterTwo = "Login: ";
                         } 
                         else {
                             std::cout << "Wprowadzono bledny parametr, zwroc uwage na wypisane w nawiasie dostepne parametry." << std::endl;
@@ -210,9 +210,9 @@ void sort_password() {
                 }
             } while (retry);
             std::cout << "Posortowana lista: " << std::endl;
-            sort_and_show_passwords_per_input(mainFile, "Strona WWW: ", parametr_sorotwaniaDwa, nazwa_sorotwania, wartosc_parametru);
+            sort_and_show_passwords_per_input(mainFile, "Strona WWW: ", sortingParameterTwo, valueThatWillBeSortedBy, wartosc_parametru);
         }
-        else if (parametr_sorotwania == "4" || parametr_sorotwania == "4.") {
+        else if (sortingParameterOne == "4" || sortingParameterOne == "4.") {
             std::cout << "Wpisz login, wedlug ktorego maja zostac posotrowane hasla:" << std::endl;
             std::cout << ">";
             std::getline(std::cin >> std::ws, login_sorotwania);
@@ -227,15 +227,15 @@ void sort_password() {
                         retry = false;
                         std::cout << "Wpisz parametr wobec, ktorego maja byc sortowane hasla (\"Nazwa\", \"Kategoria\", \"Strona WWW\")." << std::endl;
                         std::cout << ">";
-                        std::getline(std::cin >> std::ws, parametr_sorotwaniaDwa);
-                        if (parametr_sorotwaniaDwa == "kategoria" || parametr_sorotwaniaDwa == "Kategoria") {
-                            parametr_sorotwaniaDwa = "Kategoria: ";
+                        std::getline(std::cin >> std::ws, sortingParameterTwo);
+                        if (sortingParameterTwo == "kategoria" || sortingParameterTwo == "Kategoria") {
+                            sortingParameterTwo = "Kategoria: ";
                         }
-                        else if (parametr_sorotwaniaDwa == "Nazwa" || parametr_sorotwaniaDwa == "nazwa") {
-                            parametr_sorotwaniaDwa = "Nazwa: ";
+                        else if (sortingParameterTwo == "Nazwa" || sortingParameterTwo == "nazwa") {
+                            sortingParameterTwo = "Nazwa: ";
                         }
-                        else if (parametr_sorotwaniaDwa == "Strona" || parametr_sorotwaniaDwa == "strona" || parametr_sorotwaniaDwa == "Strona WWW" || parametr_sorotwaniaDwa == "strona www") {
-                            parametr_sorotwaniaDwa = "Strona WWW: ";
+                        else if (sortingParameterTwo == "Strona" || sortingParameterTwo == "strona" || sortingParameterTwo == "Strona WWW" || sortingParameterTwo == "strona www") {
+                            sortingParameterTwo = "Strona WWW: ";
                         }
                         else {
                             std::cout << "Wprowadzono bledny parametr, zwroc uwage na wypisane w nawiasie dostepne parametry." << std::endl;
@@ -252,10 +252,10 @@ void sort_password() {
                 }
             } while (retry);
             std::cout << "Posortowana lista: " << std::endl;
-            sort_and_show_passwords_per_input(mainFile, "Login: ", parametr_sorotwaniaDwa, nazwa_sorotwania, wartosc_parametru);
+            sort_and_show_passwords_per_input(mainFile, "Login: ", sortingParameterTwo, valueThatWillBeSortedBy, wartosc_parametru);
         }
         else {
-            std::cout << "Nie znaleziono Twojej komendy: \"" << parametr_sorotwania << "\". \nSprobuj ponownie wprowadzic cyfre reprezentujaca dana komende.\n" << std::endl;
+            std::cout << "Nie znaleziono Twojej komendy: \"" << sortingParameterOne << "\". \nSprobuj ponownie wprowadzic cyfre reprezentujaca dana komende.\n" << std::endl;
             retry = true;
         }
     } while (retry);
@@ -432,6 +432,14 @@ void add_category() {
 void delete_category() {
     std::cout << "Lista Twoich kategorii wraz z przypisanymi do nich haslami: " << std::endl;
     std::cout << read_file_content(mainFile, false, true) << std::endl;
+    retry = true;
+}
+
+void delete_entry(bool isPasswordDel) {
+    std::string terminalMessage = isPasswordDel ? "Lista Twoich hasel: " : "Lista Twoich kategorii wraz z przypisanymi do nich haslami: ";
+
+    std::cout << terminalMessage << std::endl;
+    std::cout << read_file_content(mainFile, isPasswordDel, !isPasswordDel) << std::endl;
     retry = true;
 }
 
