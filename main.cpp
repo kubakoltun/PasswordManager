@@ -12,12 +12,12 @@ int main() {
         std::cout << ">";
         std::getline(std::cin >> std::ws, mainFile);
 
+        // todo master password
         if (!does_file_exist(mainFile)) {
             std::cout << "Wprowadzona nazwa lub sciezka pliku nie istnieje: \"" << mainFile << "\" wprowadz poprawna nazwe lub sicezke pliku." << std::endl;
             retry = true;
-        } 
+        }
         else {
-            // todo make a master password for the main file
             retry = false;
         }
     } while (retry);
@@ -41,28 +41,36 @@ int main() {
         fflush(stdin);
 
         switch(userInputMainCommand) {
-            case '1': search_password();
-                      break;
-            case '2': sort_password();
-                      break;
-            case '3': add_password();
-                      break;
-            case '4': edit_password();
-                      break;
-            case '5': delete_password();
-                      break;
-            case '6': add_category();
-                      break;
-            case '7': delete_category();
-                      break;
-            case '0': exit_from_menager();
-                      break;
-            default: std::cout << "Nie znaleziono Twojej komendy: \"" << userInputMainCommand << "\". \nSprobuj ponownie wprowadzic cyfre reprezentujaca dana komende, od 1 do 7\n" << std::endl;
-
+            case '1': 
+                search_password();
+                break;
+            case '2': 
+                sort_password();
+                break;
+            case '3': 
+                add_password();
+                break;
+            case '4': 
+                edit_password();
+                break;
+            case '5': 
+                delete_entry(true);
+                break;
+            case '6': 
+                add_category();
+                break;
+            case '7': 
+                delete_entry(false);
+                break;
+            case '0': 
+                retry = false;
+                break;
+            default: 
+                std::cout << "Nie znaleziono Twojej komendy: \"" << userInputMainCommand << "\". \nSprobuj ponownie wprowadzic cyfre reprezentujaca dana komende, od 1 do 7\n" << std::endl;
+                break;
         }
     } while (retry);
 }
-
 
 void sort_password() {
     do {
@@ -414,9 +422,11 @@ void edit_password() {
     retry = true;
 }
 
-void delete_password() {
-    std::cout << "Lista Twoich hasel: " << std::endl;
-    std::cout << read_file_content(mainFile, true, false) << std::endl;
+void delete_entry(bool isPasswordDel) {
+    std::string terminalMessage = isPasswordDel ? "Lista Twoich hasel: " : "Lista Twoich kategorii wraz z przypisanymi do nich haslami: ";
+
+    std::cout << terminalMessage << std::endl;
+    std::cout << read_file_content(mainFile, isPasswordDel, !isPasswordDel) << std::endl;
     retry = true;
 }
 
@@ -427,22 +437,4 @@ void add_category() {
     std::getline(std::cin >> std::ws, nowa_kategoria);
     std::cout << "Wprowadzono nowa kategorie do pliku: " << enter_record_into_file(mainFile, "", "", nowa_kategoria, "-", "-");
     retry = true;
-}
-
-void delete_category() {
-    std::cout << "Lista Twoich kategorii wraz z przypisanymi do nich haslami: " << std::endl;
-    std::cout << read_file_content(mainFile, false, true) << std::endl;
-    retry = true;
-}
-
-void delete_entry(bool isPasswordDel) {
-    std::string terminalMessage = isPasswordDel ? "Lista Twoich hasel: " : "Lista Twoich kategorii wraz z przypisanymi do nich haslami: ";
-
-    std::cout << terminalMessage << std::endl;
-    std::cout << read_file_content(mainFile, isPasswordDel, !isPasswordDel) << std::endl;
-    retry = true;
-}
-
-void exit_from_menager() {
-    retry = false;
 }
