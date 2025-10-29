@@ -5,6 +5,7 @@
 bool retry = false;
 std::string mainFile;
 
+// todo main logic return
 int main() {
     do {
         retry = false;
@@ -23,9 +24,8 @@ int main() {
     } while (retry);
 
     do {
-        int userInputMainCommand;
         retry = false;
-        std::string userInputMainCommand;
+        int userInputMainCommand;
         std::cout << "Wybierz interesujaca Cie komende, wpisujac jej numer:" << std::endl;
         std::cout << "1. Wyszukaj hasla" << std::endl;
         std::cout << "2. Posortuj hasla" << std::endl;
@@ -35,38 +35,35 @@ int main() {
         std::cout << "6. Dodaj kategorie" << std::endl;
         std::cout << "7. Usun kategorie" << std::endl;
         std::cout << "0. Wyjscie" << std::endl;
-        std::cout << ">";
-        // std::cin >> userInputMainCommand;
-        userInputMainCommand = getchar();
-        fflush(stdin);
+        userInputMainCommand = prompt_int("");
 
         switch(userInputMainCommand) {
-            case '1': 
+            case 1: 
                 search_password();
                 break;
-            case '2': 
+            case 2: 
                 sort_password();
                 break;
-            case '3': 
+            case 3: 
                 add_password();
                 break;
-            case '4': 
+            case 4: 
                 edit_password();
                 break;
-            case '5': 
+            case 5: 
                 delete_entry(true);
                 break;
-            case '6': 
+            case 6: 
                 add_category();
                 break;
-            case '7': 
+            case 7: 
                 delete_entry(false);
                 break;
-            case '0': 
+            case 0: 
                 retry = false;
                 break;
             default: 
-                std::cout << "Nie znaleziono Twojej komendy: \"" << userInputMainCommand << "\". \nSprobuj ponownie wprowadzic cyfre reprezentujaca dana komende, od 1 do 7\n" << std::endl;
+                std::cout << "Nie znaleziono Twojej komendy: \"" << userInputMainCommand << "\". \nSprobuj ponownie wprowadzic cyfre reprezentujaca dana komende, od 0 do 7\n" << std::endl;
                 break;
         }
     } while (retry);
@@ -332,88 +329,39 @@ void search_password() {
 }
 
 void add_password() {
-    std::string nazwa;
-    std::string kategoria;
-    std::string strona;
+    std::string passwordName;
+    std::string category;
+    std::string page;
     std::string login;
-    std::string haslo;
+    std::string password;
 
-    std::string czy_wygenerowac_haslo;
+    bool userInputDecision;
     int ilosc_znakow_generowanego_hasla = 0;
-    std::string wielkie_znaki_generowane_haslo;
-    bool czy_wielkie_znaki = false;
-    std::string specjalne_znaki_generowane_haslo;
-    bool czy_specjalne_znaki = false;
+    bool agreedForCapitalLetters = false;
+    bool agreedForSpecialChars = false;
 
-    std::cout << "Podaj nazwe dla hasla:" << std::endl;
-    std::cout << ">";
-    std::getline(std::cin >> std::ws, nazwa);
-    std::cout << "Podaj kategorie, w ktorej ma znalezc sie wpis hasla:" << std::endl;
-    std::cout << ">";
-    std::getline(std::cin >> std::ws, kategoria);
-    std::cout << "Podaj adres WWW strony (opcjonalne, wprowadz \"-\" aby pominac):" << std::endl;
-    std::cout << ">";
-    std::getline(std::cin >> std::ws, strona);
-    std::cout << "Podaj login do portalu (opcjonalne, wprowadz \"-\" aby pominac):" << std::endl;
-    std::cout << ">";
-    std::getline(std::cin >> std::ws, login);
+    passwordName = prompt_line("Podaj nazwe dla hasla:");
+    category = prompt_line("Podaj kategorie, w ktorej ma znalezc sie wpis hasla:");
+    page = prompt_line("Podaj adres WWW strony (opcjonalne, wprowadz \"-\" aby pominac):");
+    login = prompt_line("Podaj login do portalu (opcjonalne, wprowadz \"-\" aby pominac):");
+    userInputDecision = prompt_accept_or_skip("Czy wygenerowac haslo?");
 
-    do {
-        retry = false;
-        std::cout << "Czy wygenerowac haslo?\nWpisz \"tak\" jezeli chcesz aby Twoje haslo zostalo wygenerowane, aby pominac wpisz \"-\":" << std::endl;
-        std::cout << ">";
-        std::cin >> czy_wygenerowac_haslo;
+    if (userInputDecision) {
+        ilosc_znakow_generowanego_hasla = prompt_int("Podaj ilosc znakow hasla:");
+        agreedForCapitalLetters = prompt_accept_or_skip("Czy haslo ma zawierac wielkie i male litery?");
+        agreedForSpecialChars = prompt_accept_or_skip("Czy haslo ma zawierac znaki specjalne?");
 
-        if (czy_wygenerowac_haslo == "tak") {
-            std::cout << "Podaj ilosc znakow hasla:" << std::endl;
-            std::cout << ">";
-            std::cin >> ilosc_znakow_generowanego_hasla;
-            do {
-                retry = false;
-                std::cout << "Czy haslo ma zawierac wielkie i male litery, \"tak\" aby uwzglednic, \"-\", aby pominac:" << std::endl;
-                std::cout << ">";
-                std::cin >> wielkie_znaki_generowane_haslo;
-                if (wielkie_znaki_generowane_haslo == "tak") {
-                    czy_wielkie_znaki = true;
-                }
-                else if (wielkie_znaki_generowane_haslo != "tak" && wielkie_znaki_generowane_haslo != "-") {
-                    std::cout << "Nie rozpoznano Twojej komendy \"" << wielkie_znaki_generowane_haslo << "\", wpisz \"tak\" aby uwzglednic male i wielkie litrey, \"-\", aby pominac." << std::endl;
-                    retry = true;
-                }
-            } while (retry);
-            do {
-                retry = false;
-                std::cout << "Czy haslo ma zawierac znaki specjalne, \"tak\" aby uwzglednic, \"-\" aby pominac:" << std::endl;
-                std::cout << ">";
-                std::cin >> specjalne_znaki_generowane_haslo;
-                if (specjalne_znaki_generowane_haslo == "tak") {
-                    czy_specjalne_znaki = true;
-                }
-                else if (specjalne_znaki_generowane_haslo != "tak" && specjalne_znaki_generowane_haslo != "-") {
-                    std::cout << "Nie rozpoznano Twojej komendy \" " << specjalne_znaki_generowane_haslo << "\", wpisz \"tak\" aby uwzglednic male i wielkie litrey, \"-\", aby pominac." << std::endl;
-                    retry = true;
-                }
-            } while (retry);
+        password = generate_password(ilosc_znakow_generowanego_hasla, agreedForCapitalLetters, agreedForSpecialChars, passwordName);
+        std::cout << "Wygenerowane haslo: " << password << std::endl;
+        std::cout << "Haslo jest " << password_strength_verifier(password) << "!" << std::endl;
+    }
+    else {
+        password = prompt_line("Podaj swoje haslo:");
+        std::cout << "Haslo jest " << password_strength_verifier(password) << "!" << std::endl;
+        std::cout << search_password(mainFile, password, "Haslo: ", false) << std::endl;
+    }
 
-            haslo = generate_password(ilosc_znakow_generowanego_hasla, czy_wielkie_znaki, czy_specjalne_znaki, nazwa);
-            std::cout << "Wygenerowane haslo: " << haslo << std::endl;
-            std::cout << "Haslo jest " << password_strength_verifier(haslo) << "!" << std::endl;
-        }
-        else if (czy_wygenerowac_haslo == "-") {
-            std::cout << "Podaj Swoje haslo:" << std::endl;
-            std::cout << ">";
-            std::cin >> haslo;
-            std::cout << "Haslo jest " << password_strength_verifier(haslo) << "!" << std::endl;
-            std::cout << search_password(mainFile, haslo, "Haslo: ", false) << std::endl;
-        }
-        else {
-            std::cout << "Nie rozpoznano komendy \"" << czy_wygenerowac_haslo << "\", aby wygenerowac haslo wpisz \"tak\", aby pominac wpisz \"-\"." << std::endl;
-            retry = true;
-        }
-    } while (retry);
-
-    std::cout << "Pomyslnie wprowadzono haslo do pliku: " << enter_record_into_file(mainFile, nazwa, haslo, kategoria, login, strona) << std::endl;
-    retry = true;
+    std::cout << "Pomyslnie wprowadzono haslo do pliku: " << enter_record_into_file(mainFile, passwordName, password, category, login, page) << std::endl;
 }
 
 void edit_password() {
@@ -431,10 +379,54 @@ void delete_entry(bool isPasswordDel) {
 }
 
 void add_category() {
-    std::string nowa_kategoria;
+    std::string newCategory;
     std::cout << "Wprowadz nazwe nowej kategorii:" << std::endl;
     std::cout << ">";
-    std::getline(std::cin >> std::ws, nowa_kategoria);
-    std::cout << "Wprowadzono nowa kategorie do pliku: " << enter_record_into_file(mainFile, "", "", nowa_kategoria, "-", "-");
+    std::getline(std::cin >> std::ws, newCategory);
+    std::cout << "Wprowadzono nowa kategorie do pliku: " << enter_record_into_file(mainFile, "", "", newCategory, "-", "-");
     retry = true;
+}
+
+static std::string prompt_line(const std::string& prompt) {
+    std::string line;
+    std::cout << prompt << std::endl << ">";
+    std::getline(std::cin >> std::ws, line);
+    
+    return line;
+}
+
+static int prompt_int(const std::string& prompt) {
+    int value;
+
+    while (true) {
+        std::cout << prompt << std::endl << ">";
+        if (std::cin >> value) {
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+            return value;
+        }
+        std::cout << "Nieprawidlowy numer. Sprobuj ponownie." << std::endl;
+        std::cin.clear();
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+    }
+}
+
+static bool prompt_accept_or_skip(const std::string& prompt) {
+    char input;
+    std::string fullPrompt = prompt + "\nWpisz \"(t)ak\" jezeli chcesz wyrazic zgode, aby pominac wpisz \"(n)ie\":";
+    
+    while (true) {
+        std::cout << fullPrompt << std::endl << ">";
+        if (!(std::cin >> input)) {
+            std::cin.clear();
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+            continue;
+        }
+
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        char lowerInput = static_cast<char>(std::tolower(static_cast<unsigned char>(input)));
+        if (lowerInput == 't') return true;
+        if (lowerInput == 'n') return false;
+
+        std::cout << "Nie rozpoznano komendy \"" << input << "\", wpisz \"(t)ak\" aby wyrazic zgode lub \"(n)ie\", aby pominac." << std::endl;
+    }
 }
