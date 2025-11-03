@@ -2,29 +2,26 @@
 #include <string>
 #include "password.h"
 
-bool retry = false;
 std::string mainFile;
+const std::vector<std::string> ALL_TAGS = {
+    "Nazwa: ",
+    "Kategoria: ",
+    "Strona WWW: ",
+    "Login: "
+};
 
-// todo main logic return
 int main() {
-    do {
-        retry = false;
-        std::cout << "Podaj nazwe pliku znajdujacego sie w obecnym folderze lub sciezke absolutna, aby skorzystac z programu:" << std::endl;
-        std::cout << ">";
-        std::getline(std::cin >> std::ws, mainFile);
+    while (true) {
+        mainFile = prompt_line("Podaj nazwe pliku znajdujacego sie w obecnym folderze lub sciezke absolutna, aby skorzystac z programu:");
 
         // todo master password
-        if (!does_file_exist(mainFile)) {
-            std::cout << "Wprowadzona nazwa lub sciezka pliku nie istnieje: \"" << mainFile << "\" wprowadz poprawna nazwe lub sicezke pliku." << std::endl;
-            retry = true;
+        if (does_file_exist(mainFile)) {
+            break;
         }
-        else {
-            retry = false;
-        }
-    } while (retry);
+        std::cout << "Wprowadzona nazwa lub sciezka pliku nie istnieje: \"" << mainFile << "\" wprowadz poprawna nazwe lub sicezke pliku." << std::endl;
+    }
 
-    do {
-        retry = false;
+    while (true) {
         int userInputMainCommand;
         std::cout << "Wybierz interesujaca Cie komende, wpisujac jej numer:" << std::endl;
         std::cout << "1. Wyszukaj hasla" << std::endl;
@@ -39,7 +36,7 @@ int main() {
 
         switch(userInputMainCommand) {
             case 1: 
-                search_password();
+                begin_password_search();
                 break;
             case 2: 
                 sort_password();
@@ -60,272 +57,71 @@ int main() {
                 delete_entry(false);
                 break;
             case 0: 
-                retry = false;
-                break;
+                std::cout << "Zamykam program..." << std::endl;
+                return 0;
             default: 
-                std::cout << "Nie znaleziono Twojej komendy: \"" << userInputMainCommand << "\". \nSprobuj ponownie wprowadzic cyfre reprezentujaca dana komende, od 0 do 7\n" << std::endl;
+                default_choice_message(0, 7, userInputMainCommand);
                 break;
         }
-    } while (retry);
+    }
 }
 
 void sort_password() {
-    do {
-        retry = false;
-        std::string sortingParameterOne;
-        std::string sortingParameterTwo;
-        std::string valueThatWillBeSortedBy;
-        std::string sortingCategory;
-        std::string strona_sorotwania;
-        std::string login_sorotwania;
-        std::string wartosc_parametru;
-        std::string kolejny_parametr;
+    std::string sortingParameterOne;
+    std::string sortingParameterTwo;
+    std::string valueThatWillBeSortedBy;
+    std::string sortingCategory;
+    std::string strona_sorotwania;
+    std::string login_sorotwania;
+    std::string wartosc_parametru;
+    std::string kolejny_parametr;
 
-        std::cout << "Wybierz wobec jakich parametrow chcesz posortowac hasla:" << std::endl;
-        std::cout << " 1. Nazwa" << std::endl;
-        std::cout << " 2. Kategoria" << std::endl;
-        std::cout << " 3. Strona WWW" << std::endl;
-        std::cout << " 4. Login" << std::endl;
-        std::cout << ">";
-        std::cin >> sortingParameterOne;
+    std::cout << "Wybierz wobec jakich parametrow chcesz posortowac hasla:" << std::endl;
+    print_tags_names("", true);
+    int inputDecision = prompt_int("");
 
-        if (sortingParameterOne == "1" || sortingParameterOne == "1.") {
-            std::cout << "Wpisz nazwe, wedlug ktorej maja zostac posotrowane hasla:" << std::endl;
-            std::cout << ">";
-            std::getline(std::cin >> std::ws, valueThatWillBeSortedBy);
-
-            do {
-                retry = false;
-                std::cout << "Czy dodac drugi parametr sortowania? Wpisz \"tak\", aby wprowadzic lub \"nie\", aby pominac." << std::endl;
-                std::cout << ">";
-                std::cin >> kolejny_parametr;
-                if (kolejny_parametr == "tak") {
-                    do {
-                        retry = false;
-                        std::cout << "Wpisz parametr wobec, ktorego maja byc sortowane hasla (\"Kategoria\", \"Strona WWW\", \"Login\")." << std::endl;
-                        std::cout << ">";
-                        std::getline(std::cin >> std::ws, sortingParameterTwo);
-                        if (sortingParameterTwo == "kategoria" || sortingParameterTwo == "Kategoria") {
-                            sortingParameterTwo = "Kategoria: ";
-                        }
-                        else if (sortingParameterTwo == "Strona" || sortingParameterTwo == "strona" || sortingParameterTwo == "Strona WWW" || sortingParameterTwo == "strona www") {
-                            sortingParameterTwo = "Strona WWW: ";
-                        }
-                        else if (sortingParameterTwo == "Login" || sortingParameterTwo == "login") {
-                            sortingParameterTwo = "Login: ";
-                        } 
-                        else {
-                            std::cout << "Wprowadzono bledny parametr, zwroc uwage na wypisane w nawiasie dostepne parametry." << std::endl;
-                            retry = true;
-                        }
-                    } while (retry);
-                    std::cout << "Wpisz wartosc podanego parametru:" << std::endl;
-                    std::cout << ">";
-                    std::getline(std::cin >> std::ws, wartosc_parametru);
-                }
-                else if (kolejny_parametr != "tak" && kolejny_parametr != "nie") {
-                    std::cout << "Nie rozmozpano Twojej komendy \"" << kolejny_parametr << "\", zwroc uwage aby nie wpisywac znakow specjalnych." << std::endl;
-                    retry = true;
-                }
-            } while (retry);
-            std::cout << "Posortowana lista: " << std::endl;
-            sort_and_show_passwords_per_input(mainFile, "Nazwa: ", sortingParameterTwo, valueThatWillBeSortedBy, wartosc_parametru);
-        }
-        else if (sortingParameterOne == "2" || sortingParameterOne == "2.") {
-            std::cout << "Wpisz kategorie, wedlug ktorej maja zostac posotrowane hasla:" << std::endl;
-            std::cout << ">";
-            std::getline(std::cin >> std::ws, sortingCategory);
-
-            do {
-                retry = false;
-                std::cout << "Czy dodac drugi parametr sortowania? Wpisz \"tak\", aby wprowadzic lub \"-\", aby pominac." << std::endl;
-                std::cout << ">";
-                std::cin >> kolejny_parametr;
-                if (kolejny_parametr == "tak") {
-
-                    do {
-                        retry = false;
-                        std::cout << "Wpisz parametr wobec, ktorego maja byc sortowane hasla (\"Nazwa\", \"Strona WWW\", \"Login\")." << std::endl;
-                        std::cout << ">";
-                        std::getline(std::cin >> std::ws, sortingParameterTwo);
-                        if (sortingParameterTwo == "nazwa" || sortingParameterTwo == "Nazwa") {
-                            sortingParameterTwo = "Nazwa: ";
-                        }
-                        else if (sortingParameterTwo == "Strona" || sortingParameterTwo == "strona" || sortingParameterTwo == "Strona WWW" || sortingParameterTwo == "strona www") {
-                            sortingParameterTwo = "Strona WWW: ";
-                        }
-                        else if (sortingParameterTwo == "Login" || sortingParameterTwo == "login") {
-                            sortingParameterTwo = "Login: ";
-                        }
-                        else {
-                            std::cout << "Wprowadzono bledny parametr, zwroc uwage na wypisane w nawiasie dostepne parametry." << std::endl;
-                            retry = true;
-                        }
-                    } while (retry);
-                    std::cout << "Wpisz wartosc podanego parametru:" << std::endl;
-                    std::cout << ">";
-                    std::getline(std::cin >> std::ws, wartosc_parametru);
-                }
-                else if (kolejny_parametr != "tak" && kolejny_parametr != "-") {
-                    std::cout << "Nie rozmozpano Twojej komendy \"" << kolejny_parametr << "\", zwroc uwage aby nie wpisywac znakow specjalnych." << std::endl;
-                    retry = true;
-                }
-            } while (retry);
-            std::cout << "Posortowana lista: " << std::endl;
-            sort_and_show_passwords_per_input(mainFile, "Kategoria: ", sortingParameterTwo, valueThatWillBeSortedBy, wartosc_parametru);
-        }
-        else if (sortingParameterOne == "3" || sortingParameterOne == "3.") {
-            std::cout << "Wpisz strone, wedlug ktorej maja zostac posotrowane hasla:" << std::endl;
-            std::cout << ">";
-            std::getline(std::cin >> std::ws, strona_sorotwania);
-
-            do {
-                retry = false;
-                std::cout << "Czy dodac drugi parametr sortowania? Wpisz \"tak\", aby wprowadzic lub \"-\", aby pominac." << std::endl;
-                std::cout << ">";
-                std::cin >> kolejny_parametr;
-                if (kolejny_parametr == "tak") {
-
-                    do {
-                        retry = false;
-                        std::cout << "Wpisz parametr wobec, ktorego maja byc sortowane hasla (\"Nazwa\", \"Kategoria\", \"Login\")." << std::endl;
-                        std::cout << ">";
-                        std::getline(std::cin >> std::ws, sortingParameterTwo);
-                        if (sortingParameterTwo == "kategoria" || sortingParameterTwo == "Kategoria") {
-                            sortingParameterTwo = "Kategoria: ";
-                        }
-                        else if (sortingParameterTwo == "Nazwa" || sortingParameterTwo == "nazwa") {
-                            sortingParameterTwo = "Nazwa: ";
-                        }
-                        else if (sortingParameterTwo == "Login" || sortingParameterTwo == "login") {
-                            sortingParameterTwo = "Login: ";
-                        } 
-                        else {
-                            std::cout << "Wprowadzono bledny parametr, zwroc uwage na wypisane w nawiasie dostepne parametry." << std::endl;
-                            retry = true;
-                        }
-                    } while (retry);
-                    std::cout << "Wpisz wartosc podanego parametru:" << std::endl;
-                    std::cout << ">";
-                    std::getline(std::cin >> std::ws, wartosc_parametru);
-                }
-                else if (kolejny_parametr != "tak" && kolejny_parametr != "-") {
-                    std::cout << "Nie rozmozpano Twojej komendy \"" << kolejny_parametr << "\", zwroc uwage aby nie wpisywac znakow specjalnych." << std::endl;
-                    retry = true;
-                }
-            } while (retry);
-            std::cout << "Posortowana lista: " << std::endl;
-            sort_and_show_passwords_per_input(mainFile, "Strona WWW: ", sortingParameterTwo, valueThatWillBeSortedBy, wartosc_parametru);
-        }
-        else if (sortingParameterOne == "4" || sortingParameterOne == "4.") {
-            std::cout << "Wpisz login, wedlug ktorego maja zostac posotrowane hasla:" << std::endl;
-            std::cout << ">";
-            std::getline(std::cin >> std::ws, login_sorotwania);
-
-            do {
-                retry = false;
-                std::cout << "Czy dodac drugi parametr sortowania? Wpisz \"tak\", aby wprowadzic lub \"-\", aby pominac." << std::endl;
-                std::cout << ">";
-                std::cin >> kolejny_parametr;
-                if (kolejny_parametr == "tak") {
-                    do {
-                        retry = false;
-                        std::cout << "Wpisz parametr wobec, ktorego maja byc sortowane hasla (\"Nazwa\", \"Kategoria\", \"Strona WWW\")." << std::endl;
-                        std::cout << ">";
-                        std::getline(std::cin >> std::ws, sortingParameterTwo);
-                        if (sortingParameterTwo == "kategoria" || sortingParameterTwo == "Kategoria") {
-                            sortingParameterTwo = "Kategoria: ";
-                        }
-                        else if (sortingParameterTwo == "Nazwa" || sortingParameterTwo == "nazwa") {
-                            sortingParameterTwo = "Nazwa: ";
-                        }
-                        else if (sortingParameterTwo == "Strona" || sortingParameterTwo == "strona" || sortingParameterTwo == "Strona WWW" || sortingParameterTwo == "strona www") {
-                            sortingParameterTwo = "Strona WWW: ";
-                        }
-                        else {
-                            std::cout << "Wprowadzono bledny parametr, zwroc uwage na wypisane w nawiasie dostepne parametry." << std::endl;
-                            retry = true;
-                        }
-                    } while (retry);
-                    std::cout << "Wpisz wartosc podanego parametru:" << std::endl;
-                    std::cout << ">";
-                    std::getline(std::cin >> std::ws, wartosc_parametru);
-                }
-                else if (kolejny_parametr != "tak" && kolejny_parametr != "-") {
-                    std::cout << "Nie rozmozpano Twojej komendy \"" << kolejny_parametr << "\", zwroc uwage aby nie wpisywac znakow specjalnych." << std::endl;
-                    retry = true;
-                }
-            } while (retry);
-            std::cout << "Posortowana lista: " << std::endl;
-            sort_and_show_passwords_per_input(mainFile, "Login: ", sortingParameterTwo, valueThatWillBeSortedBy, wartosc_parametru);
-        }
-        else {
-            std::cout << "Nie znaleziono Twojej komendy: \"" << sortingParameterOne << "\". \nSprobuj ponownie wprowadzic cyfre reprezentujaca dana komende.\n" << std::endl;
-            retry = true;
-        }
-    } while (retry);
-    retry = true;
+    switch(inputDecision) {
+        case 1:
+            initializae_sorting_by_params("nazwe", "Nazwa: ");
+            break;
+        case 2:
+            initializae_sorting_by_params("kategorie", "Kategoria: ");
+            break;
+        case 3:
+            initializae_sorting_by_params("strone", "Strona WWW: ");
+            break;
+        case 4:
+            initializae_sorting_by_params("nazwe uzytkownika (login)", "Login: ");
+            break;
+        default:
+            default_choice_message(1, 4, inputDecision);
+            break;
+    }
 }
 
-void search_password() {
-    do {
-        retry = false;
-        std::string userInputSearch;
-        std::cout << "Wybierz zgodnie z czym chesz wyszukac swoje haslo:" << std::endl;
-        std::cout << " 1. Wyszukaj hasla po nazwie" << std::endl;
-        std::cout << " 2. Wyszukaj hasla po kategorii" << std::endl;
-        std::cout << " 3. Wyszukaj hasla po stronie WWW" << std::endl;
-        std::cout << " 4. Wyszukaj hasla po loginie" << std::endl;
-        std::cout << ">";
-        std::cin >> userInputSearch;
+void begin_password_search() {
+    std::string input;
+    std::cout << "Wybierz zgodnie z czym chesz wyszukac swoje haslo:" << std::endl;
+    print_tags_names("", true);
+    int userInputSearch = prompt_int("");
 
-        if (userInputSearch == "1" || userInputSearch == "1.") {
-            std::string wh_nazwa;
-            std::cout << "Wpisz nazwe, wedlug ktorej ma zostac wyszukane haslo:" << std::endl;
-            std::cout << ">";
-            std::getline(std::cin >> std::ws, wh_nazwa);
-
-            std::cout << "Wyniki wyszukiwania:" << std::endl;
-            search_password(mainFile, wh_nazwa, "Nazwa: ");
-
-        }
-        else if (userInputSearch == "2" || userInputSearch == "2.") {
-            std::string wh_kategoria;
-            std::cout << "Wpisz kategorie, wedlug ktorej ma zostac wyszukane haslo:" << std::endl;
-            std::cout << ">";
-            std::getline(std::cin >> std::ws, wh_kategoria);
-
-            std::cout << "Wyniki wyszukiwania:" << std::endl;
-            search_password(mainFile, wh_kategoria, "Kategoria: ");
-
-        }
-        else if (userInputSearch == "3" || userInputSearch == "3.") {
-
-            std::string wh_strona;
-            std::cout << "Wpisz strone, wedlug ktorej ma zostac wyszukane haslo:" << std::endl;
-            std::cout << ">";
-            std::getline(std::cin >> std::ws, wh_strona);
-
-            std::cout << "Wyniki wyszukiwania:" << std::endl;
-            search_password(mainFile, wh_strona, "Strona WWW: ");
-
-        }
-        else if (userInputSearch == "4" || userInputSearch == "4.") {
-            std::string wh_login;
-            std::cout << "Wpisz login, wedlug ktorego ma zostac wyszukane haslo:" << std::endl;
-            std::cout << ">";
-            std::getline(std::cin >> std::ws, wh_login);
-
-            std::cout << "Wyniki wyszukiwania:" << std::endl;
-            search_password(mainFile, wh_login, "Login: ");
-
-        } 
-        else {
-            std::cout << "Nie znaleziono Twojej komendy: \"" << userInputSearch << "\". \nSprobuj ponownie wprowadzic cyfre reprezentujaca dana komende.\n" << std::endl;
-            retry = true;
-        }
-    } while (retry);
-    retry = true;
+    switch(userInputSearch) {
+        case 1:
+            password_search_print_helper("nazwe", "Nazwa: ");
+            break;
+        case 2: 
+            password_search_print_helper("kategorie", "Kategoria: ");
+            break;
+        case 3:
+            password_search_print_helper("strone", "Strona WWW: ");
+            search_password(mainFile, input, "Strona WWW: ");
+            break;
+        case 4:
+            password_search_print_helper("nazwe uzytkownika (login)", "Login: ");
+        default:
+            default_choice_message(1, 4, userInputSearch);
+            break;
+    }
 }
 
 void add_password() {
@@ -334,9 +130,8 @@ void add_password() {
     std::string page;
     std::string login;
     std::string password;
-
+    int charNumberForGeneratedPassword = 0;
     bool userInputDecision;
-    int ilosc_znakow_generowanego_hasla = 0;
     bool agreedForCapitalLetters = false;
     bool agreedForSpecialChars = false;
 
@@ -347,11 +142,11 @@ void add_password() {
     userInputDecision = prompt_accept_or_skip("Czy wygenerowac haslo?");
 
     if (userInputDecision) {
-        ilosc_znakow_generowanego_hasla = prompt_int("Podaj ilosc znakow hasla:");
+        charNumberForGeneratedPassword = prompt_int("Podaj ilosc znakow hasla:");
         agreedForCapitalLetters = prompt_accept_or_skip("Czy haslo ma zawierac wielkie i male litery?");
         agreedForSpecialChars = prompt_accept_or_skip("Czy haslo ma zawierac znaki specjalne?");
 
-        password = generate_password(ilosc_znakow_generowanego_hasla, agreedForCapitalLetters, agreedForSpecialChars, passwordName);
+        password = generate_password(charNumberForGeneratedPassword, agreedForCapitalLetters, agreedForSpecialChars, passwordName);
         std::cout << "Wygenerowane haslo: " << password << std::endl;
         std::cout << "Haslo jest " << password_strength_verifier(password) << "!" << std::endl;
     }
@@ -361,30 +156,25 @@ void add_password() {
         std::cout << search_password(mainFile, password, "Haslo: ", false) << std::endl;
     }
 
-    std::cout << "Pomyslnie wprowadzono haslo do pliku: " << enter_record_into_file(mainFile, passwordName, password, category, login, page) << std::endl;
+    enter_record_into_file(mainFile, passwordName, password, category, login, page);
+    std::cout << "Pomyslnie wprowadzono haslo do pliku: " << mainFile << std::endl;
 }
 
 void edit_password() {
     std::cout << "Lista Twoich hasel: " << std::endl;
     std::cout << password_edition(mainFile) << std::endl;
-    retry = true;
 }
 
 void delete_entry(bool isPasswordDel) {
     std::string terminalMessage = isPasswordDel ? "Lista Twoich hasel: " : "Lista Twoich kategorii wraz z przypisanymi do nich haslami: ";
-
     std::cout << terminalMessage << std::endl;
     std::cout << read_file_content(mainFile, isPasswordDel, !isPasswordDel) << std::endl;
-    retry = true;
 }
 
 void add_category() {
-    std::string newCategory;
-    std::cout << "Wprowadz nazwe nowej kategorii:" << std::endl;
-    std::cout << ">";
-    std::getline(std::cin >> std::ws, newCategory);
-    std::cout << "Wprowadzono nowa kategorie do pliku: " << enter_record_into_file(mainFile, "", "", newCategory, "-", "-");
-    retry = true;
+    std::string newCategory = prompt_line("Wprowadz nazwe nowej kategorii:");
+    enter_record_into_file(mainFile, "", "", newCategory, "-", "-");
+    std::cout << "Wprowadzono nowa kategorie do pliku: " << mainFile;
 }
 
 static std::string prompt_line(const std::string& prompt) {
@@ -429,4 +219,56 @@ static bool prompt_accept_or_skip(const std::string& prompt) {
 
         std::cout << "Nie rozpoznano komendy \"" << input << "\", wpisz \"(t)ak\" aby wyrazic zgode lub \"(n)ie\", aby pominac." << std::endl;
     }
+}
+
+static void password_search_print_helper(std::string inLineName, std::string tagName) {
+    std::string input = prompt_line("Wpisz " + inLineName + ", wedlug ktorej ma zostac wyszukane haslo:");
+    std::cout << "Wyniki wyszukiwania dla " << input << ":" << std::endl;
+    search_password(mainFile, input, tagName);
+}
+
+void default_choice_message(int from, int to, int userInputMainCommand) {
+    std::cout << "Nie znaleziono Twojej komendy: \"" << userInputMainCommand << "\". \nSprobuj ponownie wprowadzic cyfre reprezentujaca dana komende, od " << from << " do " << to << "\n" << std::endl;
+}
+
+void initializae_sorting_by_params(std::string inLineName, std::string tagName) {
+    std::string valueOfTheFirstTagToSortBy = prompt_line("Wpisz " + inLineName + ", wedlug ktorej maja zostac posotrowane hasla:");
+    std::string secondaryTagName = "";
+    std::string valueOfTheSecondTagToSortBy = "";
+
+    if (prompt_accept_or_skip("Czy dodac drugi parametr sortowania?")) {
+        secondaryTagName = choose_secondary_tag(tagName);
+        valueOfTheSecondTagToSortBy = prompt_line("Wpisz wartosc podanego parametru:");
+    }
+
+    std::cout << "Posortowana lista: " << std::endl;
+    sort_and_show_passwords_per_input(mainFile, tagName, secondaryTagName, valueOfTheFirstTagToSortBy, valueOfTheSecondTagToSortBy);
+}
+
+void print_tags_names(std::string skipTagName = "", bool shouldTrim = false) {
+    int optionIndex = 1;
+    for (const auto& tag : ALL_TAGS) {
+        if (tag != skipTagName) {
+            std::cout << " " << optionIndex << ". " << (shouldTrim ? tag.substr(0, tag.size() - 2) : tag) << std::endl;
+        }
+        ++optionIndex;
+    }
+}
+
+std::string choose_secondary_tag(const std::string& tagName) {
+    std::vector<std::string> availableTags;
+    for (const auto& tag : ALL_TAGS) {
+        if (tag != tagName) availableTags.push_back(tag);
+    }
+
+    std::cout << "Wybierz wobec jakich parametrow chcesz posortowac hasla:" << std::endl;
+    print_tags_names(tagName);
+
+    int secondaryTagChoice = prompt_int("");
+    if (secondaryTagChoice < 1 || secondaryTagChoice > static_cast<int>(availableTags.size())) {
+        default_choice_message(1, availableTags.size(), secondaryTagChoice);
+        return "";
+    }
+
+    return availableTags[secondaryTagChoice - 1]; 
 }

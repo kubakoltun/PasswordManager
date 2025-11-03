@@ -103,8 +103,8 @@ std::string read_file_content(const std::string& fileName, bool isPasswordRemova
  * @param page the website associated with the password (optional)
  * @return a message confirming that the record was saved
  */
-std::string enter_record_into_file(std::string fileName, const std::string& name, const std::string& password, std::string category, const std::string& login, const std::string& page) {
-    if (!validate_whether_the_file_exists(fileName)) return "";
+void enter_record_into_file(std::string fileName, const std::string& name, const std::string& password, std::string category, const std::string& login, const std::string& page) {
+    if (!validate_whether_the_file_exists(fileName)) return;
 
     std::ofstream currentFile(fileName, std::ios::app);
     if (!name.empty()) {
@@ -120,8 +120,6 @@ std::string enter_record_into_file(std::string fileName, const std::string& name
     if (!password.empty()) {
         currentFile << encrypt_decrypt_input(DEFAULT_TAG) << encrypt_decrypt_input(password) << std::endl;
     }
-
-    return fileName;
 }
 
 /**
