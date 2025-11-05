@@ -1,5 +1,5 @@
-#include "cypher.h"
 #include <string>
+#include "cypher.h"
 
 /**
  * String passed in the parameter gets its ASCII characters moved to either encrypt or decrypt its value
@@ -10,7 +10,7 @@
  * @param isEncription decides whether its a encryption or decryption, default true = encryption
  * @return encrypted argument
  */
-std::string encrypt_decrypt_input(std::string inputString, bool isEncription = true) {
+std::string encrypt_decrypt_input(std::string inputString, bool isEncription) {
     size_t stringLength = inputString.length();
     std::string encryptedString;
     char tmpCharShift = ' ';

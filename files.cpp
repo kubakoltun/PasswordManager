@@ -1,7 +1,11 @@
+#include <string>
+#include <algorithm>
+#include <sys/stat.h>
 #include "files.h"
 #include "time_stamp.h"
 #include "password.h"
-#include <sys/stat.h>
+
+void write_line(std::ofstream& out, const std::string& text, int i);
 
 /**
  * Checking whether the file passed in parameter exists via POSIX structure
@@ -180,7 +184,7 @@ void sort_and_show_passwords_per_input(const std::string& fileName, const std::s
  * @param editedPassword the replacement password (if editing a line)
  * @param isCategoryRemoval if true, removes both a category and its password
  */
-void write_to_file(const std::string& fileName, std::vector<std::string> lines, int lineNumber = 0, std::string editedPassword = "", bool isCategoryRemoval = false) {
+void write_to_file(const std::string& fileName, std::vector<std::string> lines, int lineNumber, std::string editedPassword, bool isCategoryRemoval) {
     std::ofstream writeToFile(fileName);
     lineNumber--;
     int previousLineNumber = isCategoryRemoval ? lineNumber++ : 0;

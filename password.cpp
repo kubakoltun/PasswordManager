@@ -1,12 +1,12 @@
-#include "cypher.h"
-#include "files.h"
-#include "files.h"
-#include "time_stamp.h"
 #include <string>
 #include <vector>
 #include <random>
 #include <algorithm>
 #include <cctype>
+#include "cypher.h"
+#include "files.h"
+#include "password.h"
+#include "time_stamp.h"
 
 /**
  * Generates a random password according to user defined rules (arguments).
@@ -162,7 +162,7 @@ std::string password_edition(const std::string& fileName) {
  * @param printResults whether to print matching lines (true) or return summary (false)
  * @return summary message if printResults is false, otherwise empty string
  */
-std::string search_password(const std::string& fileName, const std::string& searchedPassword, const std::string& startOfLineTag = DEFAULT_TAG, bool printResults = true) {
+std::string search_password(const std::string& fileName, const std::string& searchedPassword, const std::string& startOfLineTag, bool printResults) {
     if (!validate_whether_the_file_exists(fileName)) return "";
 
     std::ifstream currentFile(fileName);

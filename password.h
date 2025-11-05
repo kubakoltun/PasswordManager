@@ -1,9 +1,8 @@
 #pragma once
-#include "password.cpp"
+#include <string>
 #include "cypher.h"
 #include "files.h"
 #include "time_stamp.h"
-#include <string>
 
 const std::string DEFAULT_TAG = "Haslo: ";
 

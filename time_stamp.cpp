@@ -1,6 +1,6 @@
-#include "time_stamp.h"
 #include <chrono>
 #include <ctime>
+#include "time_stamp.h"
 
 /**
  * The function creates simulated noise so that other entries are not that visiable
@@ -42,6 +42,8 @@ std::string simulate_noise(int timePartIndicator) {
 
         return noise;
     }
+
+    return "";
 }
 
 /**
